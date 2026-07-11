@@ -94,7 +94,7 @@ export default function ConfrontaTelefoniaPage() {
                   <User className="h-8 w-8 mb-2 text-purple-600" />
                   <span className="font-bold">Privato</span>
                 </button>
-                <button onClick={() => setTipoUtenza('azienda')} className={`p-6 rounded-xl border-2 transition-all flex flex-col items-center ${tipoUtenza === 'azienda' ? 'border-purple-600 bg-purple-50' : 'border-gray-200 hover:border-gray-300'}`}>
+                <button onClick={() => setTipoUtenza('azienda')} className="p-6 rounded-xl border-2 border-gray-200 hover:border-purple-600 hover:bg-purple-50 transition-all flex flex-col items-center">
                   <Building2 className="h-8 w-8 mb-2 text-purple-600" />
                   <span className="font-bold">Azienda</span>
                 </button>
