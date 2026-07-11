@@ -215,9 +215,9 @@ export default function ConfrontaGasPage() {
                     )}
                   </div>
 
-                  <button className="w-full mt-6 bg-orange-600 text-white py-3 rounded-lg font-semibold hover:bg-orange-700 transition-colors">
-                    Attiva questa offerta
-                  </button>
+                    <Link href="/attivazione" className="block w-full mt-6 bg-orange-600 text-white py-3 rounded-lg font-semibold hover:bg-orange-700 transition-colors text-center">
+     Attiva questa offerta
+   </Link>
                 </div>
               ))}
             </div>
