@@ -5,9 +5,39 @@ import Link from 'next/link';
 import { ArrowLeft, Smartphone, TrendingDown, Check, ShieldCheck } from 'lucide-react';
 
 const offerteTelefonia = [
-  { id: 1, nome: 'Fibra Ultra 1 Giga', gestore: 'TIM', prezzoMensile: 29.90, giga: 'Illimitati', minuti: 'Illimitati', durata: 12, features: ['Fibra FTTH 1 Gbps', 'Giga e minuti illimitati', 'Router incluso'], metodi: ['IBAN', 'BOLLETTINO', 'CARTA'] },
-  { id: 2, nome: 'Fibra Casa 500', gestore: 'Vodafone', prezzoMensile: 24.90, giga: 'Illimitati', minuti: 'Illimitati', durata: 0, features: ['Fibra 500 Mbps', 'Nessun vincolo', 'Installazione gratuita'], metodi: ['IBAN', 'CARTA'] },
-  { id: 3, nome: 'Super Fibra', gestore: 'Fastweb', prezzoMensile: 27.90, giga: 'Illimitati', minuti: 'Illimitati', durata: 24, features: ['Fibra 1 Gbps', 'Netflix incluso 12 mesi', 'Prezzo bloccato 24 mesi'], metodi: ['IBAN', 'BOLLETTINO'] },
+  { 
+    id: 1, 
+    nome: 'Fibra Ultra 1 Giga', 
+    gestore: 'TIM', 
+    prezzoMensile: 29.90, 
+    giga: 'Illimitati', 
+    minuti: 'Illimitati', 
+    durata: 12, 
+    metodi: ['IBAN', 'BOLLETTINO', 'CARTA'],
+    features: ['Fibra FTTH 1 Gbps', 'Giga e minuti illimitati', 'Router incluso'] 
+  },
+  { 
+    id: 2, 
+    nome: 'Fibra Casa 500', 
+    gestore: 'Vodafone', 
+    prezzoMensile: 24.90, 
+    giga: 'Illimitati', 
+    minuti: 'Illimitati', 
+    durata: 0, 
+    metodi: ['IBAN', 'CARTA'],
+    features: ['Fibra 500 Mbps', 'Nessun vincolo', 'Installazione gratuita'] 
+  },
+  { 
+    id: 3, 
+    nome: 'Super Fibra', 
+    gestore: 'Fastweb', 
+    prezzoMensile: 27.90, 
+    giga: 'Illimitati', 
+    minuti: 'Illimitati', 
+    durata: 24, 
+    metodi: ['IBAN', 'BOLLETTINO'],
+    features: ['Fibra 1 Gbps', 'Netflix incluso 12 mesi', 'Prezzo bloccato 24 mesi'] 
+  },
 ];
 
 export default function ConfrontaTelefoniaPage() {
@@ -28,7 +58,12 @@ export default function ConfrontaTelefoniaPage() {
     const spesaNum = parseFloat(spesa);
     if (!spesaNum) { alert('Inserisci la spesa mensile attuale'); return; }
     
-    const offerteConRisparmio = offerteTelefonia.map((offerta) => {
+    // FILTRO INTELLIGENTE: mostra solo le offerte compatibili con il metodo scelto
+    const offerteFiltrate = offerteTelefonia.filter((offerta) => 
+      offerta.metodi.includes(metodoPagamento)
+    );
+    
+    const offerteConRisparmio = offerteFiltrate.map((offerta) => {
       const costoAnnuo = offerta.prezzoMensile * 12;
       const risparmio = (spesaNum * 12) - costoAnnuo;
       return { ...offerta, costoAnnuo, risparmio };
@@ -90,6 +125,17 @@ export default function ConfrontaTelefoniaPage() {
                  Modifica dati
               </button>
 
+              {risultati.length === 0 && (
+                <div className="bg-yellow-50 border-l-4 border-yellow-500 p-6 rounded-r-lg">
+                  <p className="text-yellow-800 font-medium">
+                    Nessuna offerta trovata per il metodo di pagamento "{metodoPagamento}".
+                  </p>
+                  <p className="text-sm text-yellow-700 mt-2">
+                    Prova a selezionare un altro metodo di pagamento nella homepage.
+                  </p>
+                </div>
+              )}
+
               {risultati.map((offerta, index) => (
                 <div key={offerta.id} className={`bg-white rounded-xl shadow-sm p-6 ${index === 0 ? 'ring-2 ring-green-500' : ''}`}>
                   {index === 0 && <div className="inline-block bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full mb-4"> Miglior offerta</div>}
@@ -117,6 +163,20 @@ export default function ConfrontaTelefoniaPage() {
                         <span className="text-sm text-gray-700">{feature}</span>
                       </div>
                     ))}
+                  </div>
+                  <div className="mt-4 pt-4 border-t border-gray-200">
+                    <p className="text-xs text-gray-500 mb-2 font-medium">Metodi di pagamento accettati:</p>
+                    <div className="flex flex-wrap gap-2">
+                      {offerta.metodi.map((metodo: string, i: number) => (
+                        <span key={i} className={`text-xs px-2 py-1 rounded-full ${
+                          metodo === metodoPagamento 
+                            ? 'bg-green-100 text-green-800 font-semibold' 
+                            : 'bg-gray-100 text-gray-600'
+                        }`}>
+                          {metodo === 'IBAN' ? 'Addebito diretto' : metodo === 'BOLLETTINO' ? 'Bollettino' : 'Carta prepagata'}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                   <Link href="/attivazione" className="block w-full mt-6 bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 text-center">
                     Attiva questa offerta
