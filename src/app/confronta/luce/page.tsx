@@ -4,38 +4,17 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Zap, TrendingDown, Check, ShieldCheck } from 'lucide-react';
 
-// Dati fittizi delle offerte (li sostituiremo con quelli reali quando avremo il backend)
-   const offerteLuce = [
-     {
-       id: 1,
-       nome: 'Luce Verde 100%',
-       gestore: 'Enel Energia',
-       prezzoKwh: 0.12,
-       pcv: 72,
-       durata: 12,
-       metodi: ['IBAN', 'BOLLETTINO'],
-       features: ['Prezzo bloccato 12 mesi', '100% energia verde', 'No costi nascosti'],
-     },
-     {
-       id: 2,
-       nome: 'Luce Fissa Plus',
-       gestore: 'Eni Plenitude',
-       prezzoKwh: 0.13,
-       pcv: 60,
-       durata: 24,
-       metodi: ['IBAN'],
-       features: ['Prezzo fisso 24 mesi', 'Assistenza dedicata', 'Sconto fedeltà'],
-     },
-     {
-       id: 3,
-       nome: 'Luce Variabile Smart',
-       gestore: 'A2A Energia',
-       prezzoKwh: 0.11,
-       pcv: 80,
-       durata: 0,
-       metodi: ['IBAN', 'BOLLETTINO', 'CARTA'],
-       features: ['Prezzo variabile PUN', 'Nessun vincolo', 'Cambia quando vuoi'],
-     },
+const offerteLuce = [
+  {
+    id: 1,
+    nome: 'Luce Verde 100%',
+    gestore: 'Enel Energia',
+    prezzoKwh: 0.12,
+    pcv: 72,
+    durata: 12,
+    metodi: ['IBAN', 'BOLLETTINO'],
+    features: ['Prezzo bloccato 12 mesi', '100% energia verde', 'No costi nascosti'],
+  },
   {
     id: 2,
     nome: 'Luce Fissa Plus',
@@ -43,6 +22,7 @@ import { ArrowLeft, Zap, TrendingDown, Check, ShieldCheck } from 'lucide-react';
     prezzoKwh: 0.13,
     pcv: 60,
     durata: 24,
+    metodi: ['IBAN'],
     features: ['Prezzo fisso 24 mesi', 'Assistenza dedicata', 'Sconto fedeltà'],
   },
   {
@@ -52,53 +32,54 @@ import { ArrowLeft, Zap, TrendingDown, Check, ShieldCheck } from 'lucide-react';
     prezzoKwh: 0.11,
     pcv: 80,
     durata: 0,
+    metodi: ['IBAN', 'BOLLETTINO', 'CARTA'],
     features: ['Prezzo variabile PUN', 'Nessun vincolo', 'Cambia quando vuoi'],
   },
 ];
 
 export default function ConfrontaLucePage() {
   const [step, setStep] = useState(1);
-   const [tipoUtenza, setTipoUtenza] = useState('Privato');
-const [metodoPagamento, setMetodoPagamento] = useState('IBAN');
-
-useEffect(() => {
-  const params = new URLSearchParams(window.location.search);
-  setTipoUtenza(params.get('tipo') || 'Privato');
-  setMetodoPagamento(params.get('pagamento') || 'IBAN');
-}, []);
   const [consumo, setConsumo] = useState('');
   const [spesa, setSpesa] = useState('');
   const [risultati, setRisultati] = useState<any[]>([]);
+  
+  const [tipoUtenza, setTipoUtenza] = useState('Privato');
+  const [metodoPagamento, setMetodoPagamento] = useState('IBAN');
 
-     const calcolaRisparmio = () => {
-     const consumoNum = parseFloat(consumo);
-     const spesaNum = parseFloat(spesa);
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    setTipoUtenza(params.get('tipo') || 'Privato');
+    setMetodoPagamento(params.get('pagamento') || 'IBAN');
+  }, []);
 
-     if (!consumoNum || !spesaNum) {
-       alert('Inserisci consumo e spesa attuale');
-       return;
-     }
+  const calcolaRisparmio = () => {
+    const consumoNum = parseFloat(consumo);
+    const spesaNum = parseFloat(spesa);
 
-     // FILTRO INTELLIGENTE: mostra solo le offerte compatibili con il metodo scelto
-     const offerteFiltrate = offerteLuce.filter((offerta) => 
-       offerta.metodi.includes(metodoPagamento)
-     );
+    if (!consumoNum || !spesaNum) {
+      alert('Inserisci consumo e spesa attuale');
+      return;
+    }
 
-     const offerteConRisparmio = offerteFiltrate.map((offerta) => {
-       const costoAnnuo = consumoNum * offerta.prezzoKwh + offerta.pcv;
-       const risparmio = spesaNum - costoAnnuo;
-       return { ...offerta, costoAnnuo, risparmio };
-     });
+    // FILTRO INTELLIGENTE: mostra solo le offerte compatibili con il metodo scelto
+    const offerteFiltrate = offerteLuce.filter((offerta) => 
+      offerta.metodi.includes(metodoPagamento)
+    );
 
-     offerteConRisparmio.sort((a, b) => b.risparmio - a.risparmio);
+    const offerteConRisparmio = offerteFiltrate.map((offerta) => {
+      const costoAnnuo = consumoNum * offerta.prezzoKwh + offerta.pcv;
+      const risparmio = spesaNum - costoAnnuo;
+      return { ...offerta, costoAnnuo, risparmio };
+    });
 
-     setRisultati(offerteConRisparmio);
-     setStep(2);
-   };
+    offerteConRisparmio.sort((a, b) => b.risparmio - a.risparmio);
+
+    setRisultati(offerteConRisparmio);
+    setStep(2);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       <header className="bg-white border-b border-gray-200">
         <div className="max-w-6xl mx-auto px-4 py-4">
           <Link href="/" className="inline-flex items-center text-blue-600 hover:text-blue-800">
@@ -108,7 +89,6 @@ useEffect(() => {
         </div>
       </header>
 
-      {/* Hero */}
       <section className="bg-gradient-to-br from-yellow-400 to-yellow-600 text-white py-12">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <Zap className="h-16 w-16 mx-auto mb-4" />
@@ -119,7 +99,6 @@ useEffect(() => {
         </div>
       </section>
 
-      {/* Privacy Banner */}
       <section className="bg-green-50 border-l-4 border-green-500 py-4">
         <div className="max-w-4xl mx-auto px-4">
           <div className="flex items-center">
@@ -131,7 +110,6 @@ useEffect(() => {
         </div>
       </section>
 
-      {/* Contenuto principale */}
       <section className="py-12">
         <div className="max-w-4xl mx-auto px-4">
           {step === 1 && (
@@ -183,16 +161,18 @@ useEffect(() => {
 
           {step === 2 && (
             <div className="space-y-6">
+              <div className="mb-6">
+                <h2 className="text-2xl font-bold mb-2">Le migliori offerte per te</h2>
+                <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg flex items-center gap-3">
+                  <ShieldCheck className="h-5 w-5 text-blue-600 flex-shrink-0" />
+                  <p className="text-sm text-blue-800">
+                    Stai confrontando offerte per <strong>{tipoUtenza === 'privato' ? 'Privati' : 'Aziende'}</strong> con pagamento tramite <strong>{metodoPagamento}</strong>.
+                  </p>
+                </div>
+              </div>
+
               <div className="flex items-center justify-between">
-                   <div className="mb-6">
-     <h2 className="text-2xl font-bold mb-2">Le migliori offerte per te</h2>
-     <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg flex items-center gap-3">
-       <ShieldCheck className="h-5 w-5 text-blue-600 flex-shrink-0" />
-       <p className="text-sm text-blue-800">
-         Stai confrontando offerte per <strong>{tipoUtenza === 'privato' ? 'Privati' : 'Aziende'}</strong> con pagamento tramite <strong>{metodoPagamento}</strong>.
-       </p>
-     </div>
-   </div>
+                <h2 className="text-2xl font-bold">Le migliori offerte per te</h2>
                 <button
                   onClick={() => setStep(1)}
                   className="text-blue-600 hover:text-blue-800 font-medium"
@@ -200,16 +180,18 @@ useEffect(() => {
                   Modifica dati
                 </button>
               </div>
-   {risultati.length === 0 && (
-     <div className="bg-yellow-50 border-l-4 border-yellow-500 p-6 rounded-r-lg">
-       <p className="text-yellow-800 font-medium">
-         Nessuna offerta trovata per il metodo di pagamento "{metodoPagamento}".
-       </p>
-       <p className="text-sm text-yellow-700 mt-2">
-         Prova a selezionare un altro metodo di pagamento nella homepage.
-       </p>
-     </div>
-   )}
+
+              {risultati.length === 0 && (
+                <div className="bg-yellow-50 border-l-4 border-yellow-500 p-6 rounded-r-lg">
+                  <p className="text-yellow-800 font-medium">
+                    Nessuna offerta trovata per il metodo di pagamento "{metodoPagamento}".
+                  </p>
+                  <p className="text-sm text-yellow-700 mt-2">
+                    Prova a selezionare un altro metodo di pagamento nella homepage.
+                  </p>
+                </div>
+              )}
+
               {risultati.map((offerta, index) => (
                 <div
                   key={offerta.id}
@@ -219,7 +201,7 @@ useEffect(() => {
                 >
                   {index === 0 && (
                     <div className="inline-block bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full mb-4">
-                       Miglior offerta
+                      Miglior offerta
                     </div>
                   )}
 
@@ -256,20 +238,22 @@ useEffect(() => {
                       </div>
                     ))}
                   </div>
-   <div className="mt-4 pt-4 border-t border-gray-200">
-     <p className="text-xs text-gray-500 mb-2 font-medium">Metodi di pagamento accettati:</p>
-     <div className="flex flex-wrap gap-2">
-       {offerta.metodi.map((metodo: string, i: number) => (
-         <span key={i} className={`text-xs px-2 py-1 rounded-full ${
-           metodo === metodoPagamento 
-             ? 'bg-green-100 text-green-800 font-semibold' 
-             : 'bg-gray-100 text-gray-600'
-         }`}>
-           {metodo === 'IBAN' ? 'Addebito diretto' : metodo === 'BOLLETTINO' ? 'Bollettino' : 'Carta prepagata'}
-         </span>
-       ))}
-     </div>
-   </div>
+
+                  <div className="mt-4 pt-4 border-t border-gray-200">
+                    <p className="text-xs text-gray-500 mb-2 font-medium">Metodi di pagamento accettati:</p>
+                    <div className="flex flex-wrap gap-2">
+                      {offerta.metodi.map((metodo: string, i: number) => (
+                        <span key={i} className={`text-xs px-2 py-1 rounded-full ${
+                          metodo === metodoPagamento 
+                            ? 'bg-green-100 text-green-800 font-semibold' 
+                            : 'bg-gray-100 text-gray-600'
+                        }`}>
+                          {metodo === 'IBAN' ? 'Addebito diretto' : metodo === 'BOLLETTINO' ? 'Bollettino' : 'Carta prepagata'}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
                   <div className="mt-4 text-sm text-gray-600">
                     <span className="font-medium">Durata:</span>{' '}
                     {offerta.durata === 0 ? (
@@ -279,9 +263,9 @@ useEffect(() => {
                     )}
                   </div>
 
-                     <Link href="/attivazione" className="block w-full mt-6 bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors text-center">
-     Attiva questa offerta
-   </Link>
+                  <Link href="/attivazione" className="block w-full mt-6 bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors text-center">
+                    Attiva questa offerta
+                  </Link>
                 </div>
               ))}
             </div>
@@ -289,7 +273,6 @@ useEffect(() => {
         </div>
       </section>
 
-      {/* Footer */}
       <footer className="bg-gray-900 text-white py-8 mt-12">
         <div className="max-w-6xl mx-auto px-4 text-center">
           <p className="text-gray-400">
