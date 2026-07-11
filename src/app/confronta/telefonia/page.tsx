@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+   import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Smartphone, TrendingDown, Check, ShieldCheck, Building2, User, MessageCircle } from 'lucide-react';
 
@@ -11,7 +11,14 @@ const offerteTelefonia = [
 ];
 
 export default function ConfrontaTelefoniaPage() {
-  const [step, setStep] = useState(1);
+     const [tipoUtenza, setTipoUtenza] = useState('Privato');
+   const [metodoPagamento, setMetodoPagamento] = useState('IBAN');
+
+   useEffect(() => {
+     const params = new URLSearchParams(window.location.search);
+     setTipoUtenza(params.get('tipo') || 'Privato');
+     setMetodoPagamento(params.get('pagamento') || 'IBAN');
+   }, []);
   const [tipoUtenza, setTipoUtenza] = useState<'privato' | 'azienda' | null>(null);
   const [spesa, setSpesa] = useState('');
   const [risultati, setRisultati] = useState<any[]>([]);
@@ -128,7 +135,13 @@ export default function ConfrontaTelefoniaPage() {
       </header>
       <section className="bg-gradient-to-br from-purple-500 to-purple-700 text-white py-12">
         <div className="max-w-4xl mx-auto px-4 text-center">
-          <h1 className="text-4xl font-bold mb-2">Le migliori offerte per te</h1>
+             <h1 className="text-4xl font-bold mb-4">Le migliori offerte per te</h1>
+   <div className="bg-white/20 backdrop-blur-sm p-4 rounded-lg max-w-2xl mx-auto flex items-center gap-3 text-left">
+     <ShieldCheck className="h-5 w-5 text-white flex-shrink-0" />
+     <p className="text-sm text-white">
+       Stai confrontando offerte per <strong>{tipoUtenza === 'privato' ? 'Privati' : 'Aziende'}</strong> con pagamento tramite <strong>{metodoPagamento}</strong>.
+     </p>
+   </div>
         </div>
       </section>
       <section className="py-12">
