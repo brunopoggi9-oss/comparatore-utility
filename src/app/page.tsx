@@ -1,7 +1,7 @@
 'use client';
 
-   import { useState } from 'react';
-   import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { 
   User, Building2, Zap, Flame, Smartphone, 
@@ -12,7 +12,7 @@ import {
 
 export default function Home() {
   const [step, setStep] = useState(1);
-     const router = useRouter();
+  const router = useRouter();
   const [tipoUtenza, setTipoUtenza] = useState<'privato' | 'azienda' | null>(null);
   const [modalita, setModalita] = useState<'fai-da-te' | 'consulenza' | null>(null);
   const [metodoPagamento, setMetodoPagamento] = useState<string | null>(null);
@@ -33,10 +33,8 @@ export default function Home() {
     setStep(4);
   };
 
-     const handleSettore = (set: 'luce' | 'gas' | 'telefonia') => {
-     // Reindirizza l'utente alla pagina di confronto, portando con sé le scelte fatte
-     router.push(`/confronta/${set}?tipo=${tipoUtenza}&pagamento=${metodoPagamento}`);
-   };
+  const handleSettore = (set: 'luce' | 'gas' | 'telefonia') => {
+    router.push(`/confronta/${set}?tipo=${tipoUtenza}&pagamento=${metodoPagamento}`);
   };
 
   return (
@@ -90,10 +88,9 @@ export default function Home() {
         </div>
       </section>
 
-      {/* SMART GATE - Il cuore dell'esperienza */}
+      {/* SMART GATE */}
       <section className="py-12 px-4 -mt-8">
         <div className="max-w-3xl mx-auto">
-          {/* Progress Bar */}
           <div className="bg-white rounded-2xl shadow-xl p-8 mb-8">
             <div className="flex items-center justify-between mb-6">
               {[1, 2, 3, 4].map((num) => (
@@ -112,9 +109,8 @@ export default function Home() {
               ))}
             </div>
 
-            {/* STEP 1: Chi sei? */}
             {step === 1 && (
-              <div className="animate-fade-in">
+              <div>
                 <h2 className="text-2xl font-bold text-gray-900 mb-2 text-center">Chi sei?</h2>
                 <p className="text-gray-600 text-center mb-8">Seleziona il tipo di utenza</p>
                 
@@ -144,9 +140,8 @@ export default function Home() {
               </div>
             )}
 
-            {/* STEP 2: Come preferisci procedere? */}
             {step === 2 && (
-              <div className="animate-fade-in">
+              <div>
                 <button onClick={() => setStep(1)} className="text-blue-600 hover:text-blue-800 text-sm mb-4 flex items-center gap-1">
                   ← Torna indietro
                 </button>
@@ -219,9 +214,8 @@ export default function Home() {
               </div>
             )}
 
-            {/* STEP 3: Metodo di pagamento (solo per Privato + Fai da te) */}
             {step === 3 && modalita === 'fai-da-te' && (
-              <div className="animate-fade-in">
+              <div>
                 <button onClick={() => setStep(2)} className="text-blue-600 hover:text-blue-800 text-sm mb-4 flex items-center gap-1">
                   ← Torna indietro
                 </button>
@@ -285,9 +279,8 @@ export default function Home() {
               </div>
             )}
 
-            {/* STEP 4: Scegli il settore */}
             {step === 3 && modalita === 'consulenza' && (
-              <div className="animate-fade-in text-center py-8">
+              <div className="text-center py-8">
                 <div className="bg-green-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
                   <Phone className="h-10 w-10 text-green-600" />
                 </div>
@@ -313,7 +306,7 @@ export default function Home() {
             )}
 
             {step === 4 && (
-              <div className="animate-fade-in">
+              <div>
                 <button onClick={() => setStep(3)} className="text-blue-600 hover:text-blue-800 text-sm mb-4 flex items-center gap-1">
                   ← Torna indietro
                 </button>
@@ -364,7 +357,6 @@ export default function Home() {
                   </button>
                 </div>
 
-                {/* Riepilogo selezione */}
                 <div className="mt-8 bg-gray-50 rounded-lg p-4 flex flex-wrap items-center justify-center gap-4 text-sm">
                   <div className="flex items-center gap-2">
                     <User className="h-4 w-4 text-blue-600" />
@@ -385,7 +377,6 @@ export default function Home() {
             )}
           </div>
 
-          {/* Sezione Trust */}
           <div className="grid md:grid-cols-3 gap-6">
             <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
               <div className="bg-blue-100 w-12 h-12 rounded-lg flex items-center justify-center mb-4">
@@ -420,7 +411,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Footer */}
       <footer className="bg-gray-900 text-white py-8 mt-12">
         <div className="max-w-6xl mx-auto px-4 text-center">
           <p className="text-gray-400">
@@ -428,19 +418,6 @@ export default function Home() {
           </p>
         </div>
       </footer>
-
-      {/* Animazione CSS inline */}
-      <style jsx>{`
-        @keyframes fade-in {
-          from { opacity: 0; transform: translateY(10px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fade-in {
-          animation: fade-in 0.4s ease-out;
-        }
-      `}</style>
     </div>
   );
 }
-
-
