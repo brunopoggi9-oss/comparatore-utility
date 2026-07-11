@@ -1,10 +1,9 @@
 'use client';
 
-   import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Flame, TrendingDown, Check, ShieldCheck } from 'lucide-react';
 
-// Dati fittizi delle offerte gas
 const offerteGas = [
   {
     id: 1,
@@ -13,6 +12,7 @@ const offerteGas = [
     prezzoSmc: 0.45,
     pcv: 120,
     durata: 24,
+    metodi: ['IBAN', 'BOLLETTINO'],
     features: ['Prezzo bloccato 24 mesi', 'Assistenza 24/7', 'Prima bolletta scontata'],
   },
   {
@@ -22,6 +22,7 @@ const offerteGas = [
     prezzoSmc: 0.42,
     pcv: 100,
     durata: 0,
+    metodi: ['IBAN'],
     features: ['Prezzo variabile PSV', 'Nessun vincolo', 'Cambia quando vuoi'],
   },
   {
@@ -31,22 +32,25 @@ const offerteGas = [
     prezzoSmc: 0.48,
     pcv: 90,
     durata: 12,
+    metodi: ['IBAN', 'BOLLETTINO', 'CARTA'],
     features: ['Gas da fonti rinnovabili', 'Prezzo fisso 12 mesi', 'No costi attivazione'],
   },
 ];
 
 export default function ConfrontaGasPage() {
   const [step, setStep] = useState(1);
-     const [tipoUtenza, setTipoUtenza] = useState('Privato');
-   const [metodoPagamento, setMetodoPagamento] = useState('IBAN');
-   useEffect(() => {
-     const params = new URLSearchParams(window.location.search);
-     setTipoUtenza(params.get('tipo') || 'Privato');
-     setMetodoPagamento(params.get('pagamento') || 'IBAN');
-   }, []);
   const [consumo, setConsumo] = useState('');
   const [spesa, setSpesa] = useState('');
   const [risultati, setRisultati] = useState<any[]>([]);
+  
+  const [tipoUtenza, setTipoUtenza] = useState('Privato');
+  const [metodoPagamento, setMetodoPagamento] = useState('IBAN');
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    setTipoUtenza(params.get('tipo') || 'Privato');
+    setMetodoPagamento(params.get('pagamento') || 'IBAN');
+  }, []);
 
   const calcolaRisparmio = () => {
     const consumoNum = parseFloat(consumo);
@@ -57,7 +61,12 @@ export default function ConfrontaGasPage() {
       return;
     }
 
-    const offerteConRisparmio = offerteGas.map((offerta) => {
+    // FILTRO INTELLIGENTE: mostra solo le offerte compatibili con il metodo scelto
+    const offerteFiltrate = offerteGas.filter((offerta) => 
+      offerta.metodi.includes(metodoPagamento)
+    );
+
+    const offerteConRisparmio = offerteFiltrate.map((offerta) => {
       const costoAnnuo = consumoNum * offerta.prezzoSmc + offerta.pcv;
       const risparmio = spesaNum - costoAnnuo;
       return { ...offerta, costoAnnuo, risparmio };
@@ -71,7 +80,6 @@ export default function ConfrontaGasPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       <header className="bg-white border-b border-gray-200">
         <div className="max-w-6xl mx-auto px-4 py-4">
           <Link href="/" className="inline-flex items-center text-blue-600 hover:text-blue-800">
@@ -81,7 +89,6 @@ export default function ConfrontaGasPage() {
         </div>
       </header>
 
-      {/* Hero */}
       <section className="bg-gradient-to-br from-orange-400 to-orange-600 text-white py-12">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <Flame className="h-16 w-16 mx-auto mb-4" />
@@ -92,7 +99,6 @@ export default function ConfrontaGasPage() {
         </div>
       </section>
 
-      {/* Privacy Banner */}
       <section className="bg-green-50 border-l-4 border-green-500 py-4">
         <div className="max-w-4xl mx-auto px-4">
           <div className="flex items-center">
@@ -104,7 +110,6 @@ export default function ConfrontaGasPage() {
         </div>
       </section>
 
-      {/* Contenuto principale */}
       <section className="py-12">
         <div className="max-w-4xl mx-auto px-4">
           {step === 1 && (
@@ -156,16 +161,18 @@ export default function ConfrontaGasPage() {
 
           {step === 2 && (
             <div className="space-y-6">
+              <div className="mb-6">
+                <h2 className="text-2xl font-bold mb-2">Le migliori offerte per te</h2>
+                <div className="bg-orange-50 border-l-4 border-orange-500 p-4 rounded-r-lg flex items-center gap-3">
+                  <ShieldCheck className="h-5 w-5 text-orange-600 flex-shrink-0" />
+                  <p className="text-sm text-orange-800">
+                    Stai confrontando offerte per <strong>{tipoUtenza === 'privato' ? 'Privati' : 'Aziende'}</strong> con pagamento tramite <strong>{metodoPagamento}</strong>.
+                  </p>
+                </div>
+              </div>
+
               <div className="flex items-center justify-between">
-                   <div className="mb-6">
-     <h2 className="text-2xl font-bold mb-2">Le migliori offerte per te</h2>
-     <div className="bg-orange-50 border-l-4 border-orange-500 p-4 rounded-r-lg flex items-center gap-3">
-       <ShieldCheck className="h-5 w-5 text-orange-600 flex-shrink-0" />
-       <p className="text-sm text-orange-800">
-         Stai confrontando offerte per <strong>{tipoUtenza === 'privato' ? 'Privati' : 'Aziende'}</strong> con pagamento tramite <strong>{metodoPagamento}</strong>.
-       </p>
-     </div>
-   </div>
+                <h2 className="text-2xl font-bold">Risultati</h2>
                 <button
                   onClick={() => setStep(1)}
                   className="text-orange-600 hover:text-orange-800 font-medium"
@@ -173,6 +180,17 @@ export default function ConfrontaGasPage() {
                   Modifica dati
                 </button>
               </div>
+
+              {risultati.length === 0 && (
+                <div className="bg-yellow-50 border-l-4 border-yellow-500 p-6 rounded-r-lg">
+                  <p className="text-yellow-800 font-medium">
+                    Nessuna offerta trovata per il metodo di pagamento "{metodoPagamento}".
+                  </p>
+                  <p className="text-sm text-yellow-700 mt-2">
+                    Prova a selezionare un altro metodo di pagamento nella homepage.
+                  </p>
+                </div>
+              )}
 
               {risultati.map((offerta, index) => (
                 <div
@@ -183,7 +201,7 @@ export default function ConfrontaGasPage() {
                 >
                   {index === 0 && (
                     <div className="inline-block bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full mb-4">
-                       Miglior offerta
+                      Miglior offerta
                     </div>
                   )}
 
@@ -221,6 +239,21 @@ export default function ConfrontaGasPage() {
                     ))}
                   </div>
 
+                  <div className="mt-4 pt-4 border-t border-gray-200">
+                    <p className="text-xs text-gray-500 mb-2 font-medium">Metodi di pagamento accettati:</p>
+                    <div className="flex flex-wrap gap-2">
+                      {offerta.metodi.map((metodo: string, i: number) => (
+                        <span key={i} className={`text-xs px-2 py-1 rounded-full ${
+                          metodo === metodoPagamento 
+                            ? 'bg-green-100 text-green-800 font-semibold' 
+                            : 'bg-gray-100 text-gray-600'
+                        }`}>
+                          {metodo === 'IBAN' ? 'Addebito diretto' : metodo === 'BOLLETTINO' ? 'Bollettino' : 'Carta prepagata'}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
                   <div className="mt-4 text-sm text-gray-600">
                     <span className="font-medium">Durata:</span>{' '}
                     {offerta.durata === 0 ? (
@@ -230,9 +263,9 @@ export default function ConfrontaGasPage() {
                     )}
                   </div>
 
-                    <Link href="/attivazione" className="block w-full mt-6 bg-orange-600 text-white py-3 rounded-lg font-semibold hover:bg-orange-700 transition-colors text-center">
-     Attiva questa offerta
-   </Link>
+                  <Link href="/attivazione" className="block w-full mt-6 bg-orange-600 text-white py-3 rounded-lg font-semibold hover:bg-orange-700 transition-colors text-center">
+                    Attiva questa offerta
+                  </Link>
                 </div>
               ))}
             </div>
@@ -240,7 +273,6 @@ export default function ConfrontaGasPage() {
         </div>
       </section>
 
-      {/* Footer */}
       <footer className="bg-gray-900 text-white py-8 mt-12">
         <div className="max-w-6xl mx-auto px-4 text-center">
           <p className="text-gray-400">
