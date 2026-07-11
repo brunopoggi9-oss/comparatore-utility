@@ -1,9 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Zap, TrendingDown, Check, ShieldCheck } from 'lucide-react';
-   import { useSearchParams } from 'next/navigation';
 
 // Dati fittizi delle offerte (li sostituiremo con quelli reali quando avremo il backend)
 const offerteLuce = [
@@ -38,9 +37,14 @@ const offerteLuce = [
 
 export default function ConfrontaLucePage() {
   const [step, setStep] = useState(1);
-     const searchParams = useSearchParams();
-   const tipoUtenza = searchParams.get('tipo') || 'Privato';
-   const metodoPagamento = searchParams.get('pagamento') || 'IBAN';
+   const [tipoUtenza, setTipoUtenza] = useState('Privato');
+const [metodoPagamento, setMetodoPagamento] = useState('IBAN');
+
+useEffect(() => {
+  const params = new URLSearchParams(window.location.search);
+  setTipoUtenza(params.get('tipo') || 'Privato');
+  setMetodoPagamento(params.get('pagamento') || 'IBAN');
+}, []);
   const [consumo, setConsumo] = useState('');
   const [spesa, setSpesa] = useState('');
   const [risultati, setRisultati] = useState<any[]>([]);
