@@ -24,9 +24,14 @@ export default function Home() {
   };
 
   const handleModalita = (mod: 'fai-da-te' | 'consulenza') => {
-    setModalita(mod);
-    setStep(3);
-  };
+  if (mod === 'consulenza') {
+    // Reindirizza alla pagina consulenza con i parametri
+    router.push(`/consulenza?tipo=${tipoUtenza}`);
+    return;
+  }
+  setModalita(mod);
+  setStep(3);
+};
 
   const handleMetodoPagamento = (metodo: string) => {
     setMetodoPagamento(metodo);
