@@ -36,7 +36,6 @@ import { ArrowLeft, Zap, TrendingDown, Check, ShieldCheck } from 'lucide-react';
        metodi: ['IBAN', 'BOLLETTINO', 'CARTA'],
        features: ['Prezzo variabile PUN', 'Nessun vincolo', 'Cambia quando vuoi'],
      },
-   ];
   {
     id: 2,
     nome: 'Luce Fissa Plus',
