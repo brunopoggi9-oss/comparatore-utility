@@ -5,16 +5,38 @@ import Link from 'next/link';
 import { ArrowLeft, Zap, TrendingDown, Check, ShieldCheck } from 'lucide-react';
 
 // Dati fittizi delle offerte (li sostituiremo con quelli reali quando avremo il backend)
-const offerteLuce = [
-  {
-    id: 1,
-    nome: 'Luce Verde 100%',
-    gestore: 'Enel Energia',
-    prezzoKwh: 0.12,
-    pcv: 72,
-    durata: 12,
-    features: ['Prezzo bloccato 12 mesi', '100% energia verde', 'No costi nascosti'],
-  },
+   const offerteLuce = [
+     {
+       id: 1,
+       nome: 'Luce Verde 100%',
+       gestore: 'Enel Energia',
+       prezzoKwh: 0.12,
+       pcv: 72,
+       durata: 12,
+       metodi: ['IBAN', 'BOLLETTINO'],
+       features: ['Prezzo bloccato 12 mesi', '100% energia verde', 'No costi nascosti'],
+     },
+     {
+       id: 2,
+       nome: 'Luce Fissa Plus',
+       gestore: 'Eni Plenitude',
+       prezzoKwh: 0.13,
+       pcv: 60,
+       durata: 24,
+       metodi: ['IBAN'],
+       features: ['Prezzo fisso 24 mesi', 'Assistenza dedicata', 'Sconto fedeltà'],
+     },
+     {
+       id: 3,
+       nome: 'Luce Variabile Smart',
+       gestore: 'A2A Energia',
+       prezzoKwh: 0.11,
+       pcv: 80,
+       durata: 0,
+       metodi: ['IBAN', 'BOLLETTINO', 'CARTA'],
+       features: ['Prezzo variabile PUN', 'Nessun vincolo', 'Cambia quando vuoi'],
+     },
+   ];
   {
     id: 2,
     nome: 'Luce Fissa Plus',
@@ -49,27 +71,31 @@ useEffect(() => {
   const [spesa, setSpesa] = useState('');
   const [risultati, setRisultati] = useState<any[]>([]);
 
-  const calcolaRisparmio = () => {
-    const consumoNum = parseFloat(consumo);
-    const spesaNum = parseFloat(spesa);
+     const calcolaRisparmio = () => {
+     const consumoNum = parseFloat(consumo);
+     const spesaNum = parseFloat(spesa);
 
-    if (!consumoNum || !spesaNum) {
-      alert('Inserisci consumo e spesa attuale');
-      return;
-    }
+     if (!consumoNum || !spesaNum) {
+       alert('Inserisci consumo e spesa attuale');
+       return;
+     }
 
-    const offerteConRisparmio = offerteLuce.map((offerta) => {
-      const costoAnnuo = consumoNum * offerta.prezzoKwh + offerta.pcv;
-      const risparmio = spesaNum - costoAnnuo;
-      return { ...offerta, costoAnnuo, risparmio };
-    });
+     // FILTRO INTELLIGENTE: mostra solo le offerte compatibili con il metodo scelto
+     const offerteFiltrate = offerteLuce.filter((offerta) => 
+       offerta.metodi.includes(metodoPagamento)
+     );
 
-    // Ordina per risparmio (dal più alto al più basso)
-    offerteConRisparmio.sort((a, b) => b.risparmio - a.risparmio);
+     const offerteConRisparmio = offerteFiltrate.map((offerta) => {
+       const costoAnnuo = consumoNum * offerta.prezzoKwh + offerta.pcv;
+       const risparmio = spesaNum - costoAnnuo;
+       return { ...offerta, costoAnnuo, risparmio };
+     });
 
-    setRisultati(offerteConRisparmio);
-    setStep(2);
-  };
+     offerteConRisparmio.sort((a, b) => b.risparmio - a.risparmio);
+
+     setRisultati(offerteConRisparmio);
+     setStep(2);
+   };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -175,7 +201,16 @@ useEffect(() => {
                   Modifica dati
                 </button>
               </div>
-
+   {risultati.length === 0 && (
+     <div className="bg-yellow-50 border-l-4 border-yellow-500 p-6 rounded-r-lg">
+       <p className="text-yellow-800 font-medium">
+         Nessuna offerta trovata per il metodo di pagamento "{metodoPagamento}".
+       </p>
+       <p className="text-sm text-yellow-700 mt-2">
+         Prova a selezionare un altro metodo di pagamento nella homepage.
+       </p>
+     </div>
+   )}
               {risultati.map((offerta, index) => (
                 <div
                   key={offerta.id}
@@ -222,7 +257,20 @@ useEffect(() => {
                       </div>
                     ))}
                   </div>
-
+   <div className="mt-4 pt-4 border-t border-gray-200">
+     <p className="text-xs text-gray-500 mb-2 font-medium">Metodi di pagamento accettati:</p>
+     <div className="flex flex-wrap gap-2">
+       {offerta.metodi.map((metodo: string, i: number) => (
+         <span key={i} className={`text-xs px-2 py-1 rounded-full ${
+           metodo === metodoPagamento 
+             ? 'bg-green-100 text-green-800 font-semibold' 
+             : 'bg-gray-100 text-gray-600'
+         }`}>
+           {metodo === 'IBAN' ? 'Addebito diretto' : metodo === 'BOLLETTINO' ? 'Bollettino' : 'Carta prepagata'}
+         </span>
+       ))}
+     </div>
+   </div>
                   <div className="mt-4 text-sm text-gray-600">
                     <span className="font-medium">Durata:</span>{' '}
                     {offerta.durata === 0 ? (
