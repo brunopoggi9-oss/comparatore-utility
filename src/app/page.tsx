@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+   import { useState } from 'react';
+   import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { 
   User, Building2, Zap, Flame, Smartphone, 
@@ -11,6 +12,7 @@ import {
 
 export default function Home() {
   const [step, setStep] = useState(1);
+     const router = useRouter();
   const [tipoUtenza, setTipoUtenza] = useState<'privato' | 'azienda' | null>(null);
   const [modalita, setModalita] = useState<'fai-da-te' | 'consulenza' | null>(null);
   const [metodoPagamento, setMetodoPagamento] = useState<string | null>(null);
@@ -31,13 +33,10 @@ export default function Home() {
     setStep(4);
   };
 
-  const handleSettore = (set: 'luce' | 'gas' | 'telefonia') => {
-    setSettore(set);
-    // Qui in futuro reindirizzeremo alla pagina corretta
-    // Per ora mostriamo un messaggio
-    setTimeout(() => {
-      alert(`Perfetto! Ti stiamo portando alle offerte di ${set.toUpperCase()} con pagamento tramite ${metodoPagamento}...`);
-    }, 500);
+     const handleSettore = (set: 'luce' | 'gas' | 'telefonia') => {
+     // Reindirizza l'utente alla pagina di confronto, portando con sé le scelte fatte
+     router.push(`/confronta/${set}?tipo=${tipoUtenza}&pagamento=${metodoPagamento}`);
+   };
   };
 
   return (
