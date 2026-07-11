@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Zap, TrendingDown, Check, ShieldCheck } from 'lucide-react';
+   import { useSearchParams } from 'next/navigation';
 
 // Dati fittizi delle offerte (li sostituiremo con quelli reali quando avremo il backend)
 const offerteLuce = [
@@ -37,6 +38,9 @@ const offerteLuce = [
 
 export default function ConfrontaLucePage() {
   const [step, setStep] = useState(1);
+     const searchParams = useSearchParams();
+   const tipoUtenza = searchParams.get('tipo') || 'Privato';
+   const metodoPagamento = searchParams.get('pagamento') || 'IBAN';
   const [consumo, setConsumo] = useState('');
   const [spesa, setSpesa] = useState('');
   const [risultati, setRisultati] = useState<any[]>([]);
@@ -151,7 +155,15 @@ export default function ConfrontaLucePage() {
           {step === 2 && (
             <div className="space-y-6">
               <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-bold">Le migliori offerte per te</h2>
+                   <div className="mb-6">
+     <h2 className="text-2xl font-bold mb-2">Le migliori offerte per te</h2>
+     <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg flex items-center gap-3">
+       <ShieldCheck className="h-5 w-5 text-blue-600 flex-shrink-0" />
+       <p className="text-sm text-blue-800">
+         Stai confrontando offerte per <strong>{tipoUtenza === 'privato' ? 'Privati' : 'Aziende'}</strong> con pagamento tramite <strong>{metodoPagamento}</strong>.
+       </p>
+     </div>
+   </div>
                 <button
                   onClick={() => setStep(1)}
                   className="text-blue-600 hover:text-blue-800 font-medium"
