@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+   import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Flame, TrendingDown, Check, ShieldCheck } from 'lucide-react';
 
@@ -37,6 +37,13 @@ const offerteGas = [
 
 export default function ConfrontaGasPage() {
   const [step, setStep] = useState(1);
+     const [tipoUtenza, setTipoUtenza] = useState('Privato');
+   const [metodoPagamento, setMetodoPagamento] = useState('IBAN');
+   useEffect(() => {
+     const params = new URLSearchParams(window.location.search);
+     setTipoUtenza(params.get('tipo') || 'Privato');
+     setMetodoPagamento(params.get('pagamento') || 'IBAN');
+   }, []);
   const [consumo, setConsumo] = useState('');
   const [spesa, setSpesa] = useState('');
   const [risultati, setRisultati] = useState<any[]>([]);
@@ -150,7 +157,15 @@ export default function ConfrontaGasPage() {
           {step === 2 && (
             <div className="space-y-6">
               <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-bold">Le migliori offerte per te</h2>
+                   <div className="mb-6">
+     <h2 className="text-2xl font-bold mb-2">Le migliori offerte per te</h2>
+     <div className="bg-orange-50 border-l-4 border-orange-500 p-4 rounded-r-lg flex items-center gap-3">
+       <ShieldCheck className="h-5 w-5 text-orange-600 flex-shrink-0" />
+       <p className="text-sm text-orange-800">
+         Stai confrontando offerte per <strong>{tipoUtenza === 'privato' ? 'Privati' : 'Aziende'}</strong> con pagamento tramite <strong>{metodoPagamento}</strong>.
+       </p>
+     </div>
+   </div>
                 <button
                   onClick={() => setStep(1)}
                   className="text-orange-600 hover:text-orange-800 font-medium"
