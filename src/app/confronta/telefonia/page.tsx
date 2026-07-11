@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Smartphone, TrendingDown, Check, ShieldCheck, Wifi } from 'lucide-react';
+import { ArrowLeft, Smartphone, TrendingDown, Check, ShieldCheck, Building2, User, MessageCircle } from 'lucide-react';
 
 // Dati fittizi delle offerte telefonia
 const offerteTelefonia = [
@@ -40,6 +40,7 @@ const offerteTelefonia = [
 
 export default function ConfrontaTelefoniaPage() {
   const [step, setStep] = useState(1);
+  const [tipoUtenza, setTipoUtenza] = useState<'privato' | 'azienda'>('privato');
   const [spesa, setSpesa] = useState('');
   const [risultati, setRisultati] = useState<any[]>([]);
 
@@ -64,6 +65,125 @@ export default function ConfrontaTelefoniaPage() {
     setStep(2);
   };
 
+  // Se è azienda, mostriamo il messaggio dedicato
+  if (tipoUtenza === 'azienda') {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        {/* Header */}
+        <header className="bg-white border-b border-gray-200">
+          <div className="max-w-6xl mx-auto px-4 py-4">
+            <Link href="/" className="inline-flex items-center text-blue-600 hover:text-blue-800">
+              <ArrowLeft className="h-5 w-5 mr-2" />
+              Torna alla home
+            </Link>
+          </div>
+        </header>
+
+        {/* Hero */}
+        <section className="bg-gradient-to-br from-purple-500 to-purple-700 text-white py-12">
+          <div className="max-w-4xl mx-auto px-4 text-center">
+            <Building2 className="h-16 w-16 mx-auto mb-4" />
+            <h1 className="text-4xl font-bold mb-2">Soluzioni Fibra per Aziende</h1>
+            <p className="text-lg text-purple-100">
+              Offerte dedicate su misura per la tua impresa
+            </p>
+          </div>
+        </section>
+
+        {/* Contenuto */}
+        <section className="py-16">
+          <div className="max-w-3xl mx-auto px-4">
+            <div className="bg-white rounded-xl shadow-lg p-8 text-center">
+              <div className="bg-purple-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
+                <Building2 className="h-10 w-10 text-purple-600" />
+              </div>
+              
+              <h2 className="text-2xl font-bold mb-4">
+                Hai una Partita IVA o sei un'azienda?
+              </h2>
+              
+              <p className="text-gray-600 mb-6 text-lg">
+                Le offerte per le aziende richiedono una consulenza personalizzata. 
+                I nostri esperti ti aiuteranno a trovare la soluzione migliore 
+                per le tue esigenze, con condizioni dedicate e supporto prioritario.
+              </p>
+
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
+                <h3 className="font-semibold text-blue-900 mb-2">
+                   Vantaggi per le aziende:
+                </h3>
+                <ul className="text-left text-sm text-blue-800 space-y-2">
+                  <li className="flex items-center gap-2">
+                    <Check className="h-4 w-4" />
+                    Prezzi dedicati e sconti volume
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="h-4 w-4" />
+                    Supporto tecnico prioritario 24/7
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="h-4 w-4" />
+                    Installazione rapida e gratuita
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="h-4 w-4" />
+                    Fatturazione elettronica integrata
+                  </li>
+                </ul>
+              </div>
+
+              <div className="space-y-4">
+                <button
+                  onClick={() => alert('Chatbot: Ciao! Sono qui per aiutarti. Quando preferisci essere ricontattato da un nostro consulente?')}
+                  className="w-full bg-purple-600 text-white py-4 rounded-lg font-semibold hover:bg-purple-700 transition-colors flex items-center justify-center gap-2"
+                >
+                  <MessageCircle className="h-5 w-5" />
+                  Parla con il Chatbot
+                </button>
+                
+                <a
+                  href="tel:+39800123456"
+                  className="block w-full bg-white border-2 border-purple-600 text-purple-600 py-4 rounded-lg font-semibold hover:bg-purple-50 transition-colors"
+                >
+                  📞 Chiama il numero verde: 800 123 456
+                </a>
+
+                <Link
+                  href="/contatti-azienda"
+                  className="block w-full bg-gray-100 text-gray-800 py-3 rounded-lg font-semibold hover:bg-gray-200 transition-colors"
+                >
+                  📅 Prenota consulenza a domicilio
+                </Link>
+              </div>
+
+              <div className="mt-6 pt-6 border-t border-gray-200">
+                <p className="text-sm text-gray-500 mb-4">
+                  Oppure continua come privato:
+                </p>
+                <button
+                  onClick={() => setTipoUtenza('privato')}
+                  className="text-purple-600 hover:text-purple-800 font-medium underline"
+                >
+                  Sono un privato
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Footer */}
+        <footer className="bg-gray-900 text-white py-8 mt-12">
+          <div className="max-w-6xl mx-auto px-4 text-center">
+            <p className="text-gray-400">
+              © 2026 Comparatore Utility. Tutti i diritti riservati.
+            </p>
+          </div>
+        </footer>
+      </div>
+    );
+  }
+
+  // Se è privato, mostriamo il form normale (come prima)
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -205,9 +325,9 @@ export default function ConfrontaTelefoniaPage() {
                     )}
                   </div>
 
-                     <Link href="/attivazione" className="block w-full mt-6 bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors text-center">
-     Attiva questa offerta
-   </Link>
+                  <button className="w-full mt-6 bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors">
+                    Attiva questa offerta
+                  </button>
                 </div>
               ))}
             </div>
