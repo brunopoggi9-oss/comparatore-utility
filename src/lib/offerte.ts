@@ -34,15 +34,15 @@ export async function getOfferte(categoria: 'luce' | 'gas' | 'telefonia'): Promi
     const numero = parseFloat(conPunto);
     return isNaN(numero) ? 0 : numero;
   };
-  return offerte
+   return offerte
     .filter((row) => row.categoria?.toLowerCase() === categoria)
     .map((row) => ({
       id: row.id,
       categoria: row.categoria,
       nome: row.nome,
       gestore: row.gestore,
-      prezzo: parseFloat(row.prezzo) || 0,
-      costo_fisso: parseFloat(row.costo_fisso) || 0,
+      prezzo: pulisciNumero(row.prezzo),
+      costo_fisso: pulisciNumero(row.costo_fisso),
       durata: parseInt(row.durata) || 0,
       metodi: row.metodi ? row.metodi.split(',').map((m: string) => m.trim().toUpperCase()) : [],
       vantaggi: row.vantaggi ? row.vantaggi.split(';').map((v: string) => v.trim()) : []
