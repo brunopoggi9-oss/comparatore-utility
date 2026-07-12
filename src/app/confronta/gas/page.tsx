@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Flame, TrendingDown, Check, ShieldCheck } from 'lucide-react';
+import { ArrowLeft, Flame, TrendingDown, Check, ShieldCheck, Zap } from 'lucide-react';
 
 const offerteGas = [
   {
@@ -61,7 +61,6 @@ export default function ConfrontaGasPage() {
       return;
     }
 
-    // FILTRO INTELLIGENTE: mostra solo le offerte compatibili con il metodo scelto
     const offerteFiltrate = offerteGas.filter((offerta) => 
       offerta.metodi.includes(metodoPagamento)
     );
@@ -80,16 +79,27 @@ export default function ConfrontaGasPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <header className="bg-white border-b border-gray-200">
-        <div className="max-w-6xl mx-auto px-4 py-4">
-          <Link href="/" className="inline-flex items-center text-blue-600 hover:text-blue-800">
-            <ArrowLeft className="h-5 w-5 mr-2" />
-            Torna alla home
+      {/* Header Pogio */}
+      <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+          <Link href="/" className="inline-flex items-center gap-2">
+            <div className="bg-blue-600 text-white p-2 rounded-lg">
+              <Zap className="h-5 w-5" />
+            </div>
+            <div>
+              <span className="text-xl font-bold text-gray-900">Pogio</span>
+              <p className="text-xs text-gray-500 -mt-1">Confronta e risparmia</p>
+            </div>
           </Link>
+          <div className="flex items-center gap-2 text-sm text-green-600">
+            <ShieldCheck className="h-4 w-4" />
+            <span className="hidden sm:inline">Dati al sicuro</span>
+          </div>
         </div>
       </header>
 
-      <section className="bg-gradient-to-br from-orange-400 to-orange-600 text-white py-12">
+      {/* Hero Section Gas (Arancione per differenziare) */}
+      <section className="bg-gradient-to-br from-orange-500 to-red-600 text-white py-12">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <Flame className="h-16 w-16 mx-auto mb-4" />
           <h1 className="text-4xl font-bold mb-2">Confronta le offerte Gas</h1>
@@ -126,7 +136,7 @@ export default function ConfrontaGasPage() {
                     value={consumo}
                     onChange={(e) => setConsumo(e.target.value)}
                     placeholder="Es. 800"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                   <p className="text-sm text-gray-500 mt-1">
                     Lo trovi nella bolletta alla voce "Consumi annui" (Smc = metri cubi)
@@ -142,7 +152,7 @@ export default function ConfrontaGasPage() {
                     value={spesa}
                     onChange={(e) => setSpesa(e.target.value)}
                     placeholder="Es. 500"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                   <p className="text-sm text-gray-500 mt-1">
                     Somma di tutte le bollette dell'ultimo anno
@@ -151,7 +161,7 @@ export default function ConfrontaGasPage() {
 
                 <button
                   onClick={calcolaRisparmio}
-                  className="w-full bg-orange-600 text-white py-4 rounded-lg font-semibold hover:bg-orange-700 transition-colors"
+                  className="w-full bg-blue-600 text-white py-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
                 >
                   Confronta le offerte
                 </button>
@@ -163,9 +173,9 @@ export default function ConfrontaGasPage() {
             <div className="space-y-6">
               <div className="mb-6">
                 <h2 className="text-2xl font-bold mb-2">Le migliori offerte per te</h2>
-                <div className="bg-orange-50 border-l-4 border-orange-500 p-4 rounded-r-lg flex items-center gap-3">
-                  <ShieldCheck className="h-5 w-5 text-orange-600 flex-shrink-0" />
-                  <p className="text-sm text-orange-800">
+                <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg flex items-center gap-3">
+                  <ShieldCheck className="h-5 w-5 text-blue-600 flex-shrink-0" />
+                  <p className="text-sm text-blue-800">
                     Stai confrontando offerte per <strong>{tipoUtenza === 'privato' ? 'Privati' : 'Aziende'}</strong> con pagamento tramite <strong>{metodoPagamento}</strong>.
                   </p>
                 </div>
@@ -175,7 +185,7 @@ export default function ConfrontaGasPage() {
                 <h2 className="text-2xl font-bold">Risultati</h2>
                 <button
                   onClick={() => setStep(1)}
-                  className="text-orange-600 hover:text-orange-800 font-medium"
+                  className="text-blue-600 hover:text-blue-800 font-medium"
                 >
                   Modifica dati
                 </button>
@@ -263,7 +273,7 @@ export default function ConfrontaGasPage() {
                     )}
                   </div>
 
-                  <Link href="/attivazione" className="block w-full mt-6 bg-orange-600 text-white py-3 rounded-lg font-semibold hover:bg-orange-700 transition-colors text-center">
+                  <Link href="/attivazione" className="block w-full mt-6 bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors text-center">
                     Attiva questa offerta
                   </Link>
                 </div>
@@ -273,10 +283,20 @@ export default function ConfrontaGasPage() {
         </div>
       </section>
 
+      {/* Footer Pogio */}
       <footer className="bg-gray-900 text-white py-8 mt-12">
         <div className="max-w-6xl mx-auto px-4 text-center">
-          <p className="text-gray-400">
-            © 2026 Comparatore Utility. Tutti i diritti riservati.
+          <div className="flex items-center justify-center gap-2 mb-4">
+            <div className="bg-blue-600 text-white p-2 rounded-lg">
+              <Zap className="h-5 w-5" />
+            </div>
+            <div className="text-left">
+              <span className="text-xl font-bold">Pogio</span>
+              <p className="text-xs text-gray-400 -mt-1">Confronta e risparmia</p>
+            </div>
+          </div>
+          <p className="text-gray-400 text-sm">
+            © 2026 Pogio. Tutti i diritti riservati.
           </p>
         </div>
       </footer>
