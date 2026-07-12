@@ -1,5 +1,6 @@
 import './globals.css';
 import { Metadata } from 'next';
+   import GoogleAnalytics from '../components/GoogleAnalytics';
 
 export const metadata: Metadata = {
   title: 'Pogio - Confronta e risparmia su Luce, Gas e Telefonia',
@@ -39,7 +40,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="it">
-      <body>{children}</body>
+      <body>   <GoogleAnalytics />
+        {children}
+      </body>
     </html>
   );
 }
