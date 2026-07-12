@@ -61,7 +61,6 @@ export default function ConfrontaLucePage() {
       return;
     }
 
-    // FILTRO INTELLIGENTE: mostra solo le offerte compatibili con il metodo scelto
     const offerteFiltrate = offerteLuce.filter((offerta) => 
       offerta.metodi.includes(metodoPagamento)
     );
@@ -81,19 +80,24 @@ export default function ConfrontaLucePage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white border-b border-gray-200">
-        <div className="max-w-6xl mx-auto px-4 py-4">
-          <Link href="/" className="inline-flex items-center text-blue-600 hover:text-blue-800">
-            <ArrowLeft className="h-5 w-5 mr-2" />
-            Torna alla home
+        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+          <Link href="/" className="inline-flex items-center gap-2">
+            <div className="bg-blue-600 text-white p-2 rounded-lg">
+              <Zap className="h-5 w-5" />
+            </div>
+            <div>
+              <span className="text-xl font-bold text-gray-900">Pogio</span>
+              <p className="text-xs text-gray-500 -mt-1">Confronta e risparmia</p>
+            </div>
           </Link>
         </div>
       </header>
 
-      <section className="bg-gradient-to-br from-yellow-400 to-yellow-600 text-white py-12">
+      <section className="bg-gradient-to-br from-blue-600 to-blue-800 text-white py-12">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <Zap className="h-16 w-16 mx-auto mb-4" />
           <h1 className="text-4xl font-bold mb-2">Confronta le offerte Luce</h1>
-          <p className="text-lg text-yellow-100">
+          <p className="text-lg text-blue-100">
             Inserisci i tuoi consumi e scopri quanto puoi risparmiare
           </p>
         </div>
@@ -172,7 +176,7 @@ export default function ConfrontaLucePage() {
               </div>
 
               <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-bold">Le migliori offerte per te</h2>
+                <h2 className="text-2xl font-bold">Risultati</h2>
                 <button
                   onClick={() => setStep(1)}
                   className="text-blue-600 hover:text-blue-800 font-medium"
@@ -275,8 +279,17 @@ export default function ConfrontaLucePage() {
 
       <footer className="bg-gray-900 text-white py-8 mt-12">
         <div className="max-w-6xl mx-auto px-4 text-center">
-          <p className="text-gray-400">
-            © 2026 Comparatore Utility. Tutti i diritti riservati.
+          <div className="flex items-center justify-center gap-2 mb-4">
+            <div className="bg-blue-600 text-white p-2 rounded-lg">
+              <Zap className="h-5 w-5" />
+            </div>
+            <div className="text-left">
+              <span className="text-xl font-bold">Pogio</span>
+              <p className="text-xs text-gray-400 -mt-1">Confronta e risparmia</p>
+            </div>
+          </div>
+          <p className="text-gray-400 text-sm">
+            © 2026 Pogio. Tutti i diritti riservati.
           </p>
         </div>
       </footer>
