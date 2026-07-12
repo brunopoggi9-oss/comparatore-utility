@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Zap, TrendingDown, Check, ShieldCheck } from 'lucide-react';
-import { getOfferte, Offerta } from '../../lib/offerte';
+import { getOfferte, Offerta } from '@/lib/offerte';
 
 export default function ConfrontaLucePage() {
   const [step, setStep] = useState(1);
