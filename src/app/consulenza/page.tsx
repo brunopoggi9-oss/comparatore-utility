@@ -303,12 +303,22 @@ export default function ConsulenzaPage() {
               </div>
 
               {/* Submit */}
-              <button
+                            <button
                 type="submit"
-                className="w-full bg-green-600 text-white py-4 rounded-lg font-semibold hover:bg-green-700 transition-colors flex items-center justify-center gap-2"
+                disabled={loading}
+                className="w-full bg-green-600 text-white py-4 rounded-lg font-semibold hover:bg-green-700 transition-colors flex items-center justify-center gap-2 disabled:bg-gray-400 disabled:cursor-not-allowed"
               >
-                <Phone className="h-5 w-5" />
-                Richiedi consulenza gratuita
+                {loading ? (
+                  <>
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                    Invio in corso...
+                  </>
+                ) : (
+                  <>
+                    <Phone className="h-5 w-5" />
+                    Richiedi consulenza gratuita
+                  </>
+                )}
               </button>
 
               <p className="text-xs text-gray-500 text-center">
