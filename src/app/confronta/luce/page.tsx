@@ -290,6 +290,9 @@ export default function ConfrontaLucePage() {
           </div>
           <p className="text-gray-400 text-sm">
             © 2026 Pogio. Tutti i diritti riservati.
+            <div className="mt-4 text-sm text-gray-500">
+  <a href="mailto:info@pogio.it" className="hover:text-blue-400">info@pogio.it</a>
+</div>
           </p>
         </div>
       </footer>
