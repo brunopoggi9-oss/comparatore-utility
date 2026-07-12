@@ -24,7 +24,16 @@ export async function getOfferte(categoria: 'luce' | 'gas' | 'telefonia'): Promi
   });
 
   const offerte = parsed.data as any[];
-  
+    // Funzione per pulire i numeri (gestisce virgole, punti, formati strani)
+  const pulisciNumero = (valore: string): number => {
+    if (!valore) return 0;
+    // Rimuovi tutto tranne numeri, virgole e punti
+    const pulito = valore.replace(/[^0-9.,]/g, '');
+    // Se c'è una virgola, sostituiscila con punto (formato italiano -> inglese)
+    const conPunto = pulito.replace(',', '.');
+    const numero = parseFloat(conPunto);
+    return isNaN(numero) ? 0 : numero;
+  };
   return offerte
     .filter((row) => row.categoria?.toLowerCase() === categoria)
     .map((row) => ({
