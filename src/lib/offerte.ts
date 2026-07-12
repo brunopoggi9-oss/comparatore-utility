@@ -17,8 +17,7 @@ export interface Offerta {
 
 export async function getOfferte(categoria: 'luce' | 'gas' | 'telefonia'): Promise<Offerta[]> {
   const res = await fetch(SHEET_URL, { 
-    next: { revalidate: 3600 } // Aggiorna i dati ogni ora
-  });
+     });
   const text = await res.text();
   
   const parsed = Papa.parse(text, { 
