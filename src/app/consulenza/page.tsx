@@ -16,6 +16,7 @@ export default function ConsulenzaPage() {
     privacy: false
   });
   const [inviato, setInviato] = useState(false);
+     const [loading, setLoading] = useState(false);
   const [tipoUtenzaUrl, setTipoUtenzaUrl] = useState('privato');
   const [settoreUrl, setSettoreUrl] = useState('tutti');
 
@@ -37,12 +38,41 @@ export default function ConsulenzaPage() {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
     if (!formData.privacy) {
       alert('Devi accettare l\'informativa privacy per continuare');
       return;
     }
+    if (!formData.nome || !formData.telefono) {
+      alert('Nome e telefono sono obbligatori');
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await fetch("https://formspree.io/f/mqerzybv", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify(formData)
+      });
+
+      if (response.ok) {
+        setInviato(true);
+      } else {
+        alert("Si è verificato un errore. Riprova.");
+      }
+    } catch (error) {
+      alert("Errore di connessione. Controlla la tua rete.");
+    } finally {
+      setLoading(false);
+    }
+  };
     if (!formData.nome || !formData.telefono) {
       alert('Nome e telefono sono obbligatori');
       return;
