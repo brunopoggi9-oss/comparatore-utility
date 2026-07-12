@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Phone, ShieldCheck, CheckCircle2, Clock, User, Building2, Zap, Flame, Smartphone } from 'lucide-react';
+import { ArrowLeft, Phone, ShieldCheck, CheckCircle2, Clock, User, Building2, Zap } from 'lucide-react';
 
 export default function ConsulenzaPage() {
   const [formData, setFormData] = useState({
@@ -16,7 +16,7 @@ export default function ConsulenzaPage() {
     privacy: false
   });
   const [inviato, setInviato] = useState(false);
-     const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [tipoUtenzaUrl, setTipoUtenzaUrl] = useState('privato');
   const [settoreUrl, setSettoreUrl] = useState('tutti');
 
@@ -38,7 +38,7 @@ export default function ConsulenzaPage() {
     }));
   };
 
-    const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!formData.privacy) {
@@ -53,6 +53,7 @@ export default function ConsulenzaPage() {
     setLoading(true);
 
     try {
+      // IMPORTANTE: Sostituisci il link qui sotto con il tuo endpoint Formspree
       const response = await fetch("https://formspree.io/f/mqerzybv", {
         method: "POST",
         headers: {
@@ -72,13 +73,6 @@ export default function ConsulenzaPage() {
     } finally {
       setLoading(false);
     }
-  };
-    if (!formData.nome || !formData.telefono) {
-      alert('Nome e telefono sono obbligatori');
-      return;
-    }
-    // Qui in futuro invieremo i dati al backend
-    setInviato(true);
   };
 
   if (inviato) {
@@ -303,7 +297,7 @@ export default function ConsulenzaPage() {
               </div>
 
               {/* Submit */}
-                            <button
+              <button
                 type="submit"
                 disabled={loading}
                 className="w-full bg-green-600 text-white py-4 rounded-lg font-semibold hover:bg-green-700 transition-colors flex items-center justify-center gap-2 disabled:bg-gray-400 disabled:cursor-not-allowed"
@@ -360,7 +354,7 @@ export default function ConsulenzaPage() {
       <footer className="bg-gray-900 text-white py-8 mt-12">
         <div className="max-w-6xl mx-auto px-4 text-center">
           <p className="text-gray-400">
-            © 2026 Comparatore Utility. Tutti i diritti riservati.
+            © 2026 Pogio. Tutti i diritti riservati.
           </p>
         </div>
       </footer>
