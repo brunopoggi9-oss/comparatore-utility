@@ -24,14 +24,13 @@ export default function Home() {
   };
 
   const handleModalita = (mod: 'fai-da-te' | 'consulenza') => {
-  if (mod === 'consulenza') {
-    // Reindirizza alla pagina consulenza con i parametri
-    router.push(`/consulenza?tipo=${tipoUtenza}`);
-    return;
-  }
-  setModalita(mod);
-  setStep(3);
-};
+    if (mod === 'consulenza') {
+      router.push(`/consulenza?tipo=${tipoUtenza}`);
+      return;
+    }
+    setModalita(mod);
+    setStep(3);
+  };
 
   const handleMetodoPagamento = (metodo: string) => {
     setMetodoPagamento(metodo);
@@ -51,7 +50,10 @@ export default function Home() {
             <div className="bg-blue-600 text-white p-2 rounded-lg">
               <Zap className="h-5 w-5" />
             </div>
-            <span className="text-xl font-bold text-gray-900">Comparatore Utility</span>
+            <div>
+              <span className="text-xl font-bold text-gray-900">Pogio</span>
+              <p className="text-xs text-gray-500 -mt-1">Confronta e risparmia</p>
+            </div>
           </div>
           <div className="flex items-center gap-2 text-sm text-green-600">
             <ShieldCheck className="h-4 w-4" />
@@ -418,8 +420,17 @@ export default function Home() {
 
       <footer className="bg-gray-900 text-white py-8 mt-12">
         <div className="max-w-6xl mx-auto px-4 text-center">
-          <p className="text-gray-400">
-            © 2026 Comparatore Utility. Tutti i diritti riservati.
+          <div className="flex items-center justify-center gap-2 mb-4">
+            <div className="bg-blue-600 text-white p-2 rounded-lg">
+              <Zap className="h-5 w-5" />
+            </div>
+            <div className="text-left">
+              <span className="text-xl font-bold">Pogio</span>
+              <p className="text-xs text-gray-400 -mt-1">Confronta e risparmia</p>
+            </div>
+          </div>
+          <p className="text-gray-400 text-sm">
+            © 2026 Pogio. Tutti i diritti riservati.
           </p>
         </div>
       </footer>
