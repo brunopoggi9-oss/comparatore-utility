@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Smartphone, TrendingDown, Check, ShieldCheck } from 'lucide-react';
+import { ArrowLeft, Smartphone, TrendingDown, Check, ShieldCheck, Zap } from 'lucide-react';
 
 const offerteTelefonia = [
   { 
@@ -58,7 +58,6 @@ export default function ConfrontaTelefoniaPage() {
     const spesaNum = parseFloat(spesa);
     if (!spesaNum) { alert('Inserisci la spesa mensile attuale'); return; }
     
-    // FILTRO INTELLIGENTE: mostra solo le offerte compatibili con il metodo scelto
     const offerteFiltrate = offerteTelefonia.filter((offerta) => 
       offerta.metodi.includes(metodoPagamento)
     );
@@ -75,14 +74,26 @@ export default function ConfrontaTelefoniaPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <header className="bg-white border-b border-gray-200">
-        <div className="max-w-6xl mx-auto px-4 py-4">
-          <Link href="/" className="inline-flex items-center text-blue-600 hover:text-blue-800">
-            <ArrowLeft className="h-5 w-5 mr-2" /> Torna alla home
+      {/* Header Pogio */}
+      <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+          <Link href="/" className="inline-flex items-center gap-2">
+            <div className="bg-blue-600 text-white p-2 rounded-lg">
+              <Zap className="h-5 w-5" />
+            </div>
+            <div>
+              <span className="text-xl font-bold text-gray-900">Pogio</span>
+              <p className="text-xs text-gray-500 -mt-1">Confronta e risparmia</p>
+            </div>
           </Link>
+          <div className="flex items-center gap-2 text-sm text-green-600">
+            <ShieldCheck className="h-4 w-4" />
+            <span className="hidden sm:inline">Dati al sicuro</span>
+          </div>
         </div>
       </header>
 
+      {/* Hero Section Telefonia (Viola per differenziare) */}
       <section className="bg-gradient-to-br from-purple-500 to-purple-700 text-white py-12">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <Smartphone className="h-16 w-16 mx-auto mb-4" />
@@ -99,10 +110,10 @@ export default function ConfrontaTelefoniaPage() {
               <div className="space-y-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Spesa mensile attuale (€)</label>
-                  <input type="number" value={spesa} onChange={(e) => setSpesa(e.target.value)} placeholder="Es. 35" className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500" />
+                  <input type="number" value={spesa} onChange={(e) => setSpesa(e.target.value)} placeholder="Es. 35" className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
                   <p className="text-sm text-gray-500 mt-1">Quanto paghi al mese per la tua connessione internet</p>
                 </div>
-                <button onClick={calcolaRisparmio} className="w-full bg-purple-600 text-white py-4 rounded-lg font-semibold hover:bg-purple-700">
+                <button onClick={calcolaRisparmio} className="w-full bg-blue-600 text-white py-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
                   Confronta le offerte
                 </button>
               </div>
@@ -113,15 +124,15 @@ export default function ConfrontaTelefoniaPage() {
             <div className="space-y-6">
               <div className="mb-6">
                 <h2 className="text-2xl font-bold mb-2">Le migliori offerte per te</h2>
-                <div className="bg-purple-50 border-l-4 border-purple-500 p-4 rounded-r-lg flex items-center gap-3">
-                  <ShieldCheck className="h-5 w-5 text-purple-600 flex-shrink-0" />
-                  <p className="text-sm text-purple-800">
+                <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg flex items-center gap-3">
+                  <ShieldCheck className="h-5 w-5 text-blue-600 flex-shrink-0" />
+                  <p className="text-sm text-blue-800">
                     Stai confrontando offerte per <strong>{tipoUtenza === 'privato' ? 'Privati' : 'Aziende'}</strong> con pagamento tramite <strong>{metodoPagamento}</strong>.
                   </p>
                 </div>
               </div>
 
-              <button onClick={() => setStep(1)} className="text-purple-600 hover:text-purple-800 font-medium">
+              <button onClick={() => setStep(1)} className="text-blue-600 hover:text-blue-800 font-medium">
                  Modifica dati
               </button>
 
@@ -178,7 +189,7 @@ export default function ConfrontaTelefoniaPage() {
                       ))}
                     </div>
                   </div>
-                  <Link href="/attivazione" className="block w-full mt-6 bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 text-center">
+                  <Link href="/attivazione" className="block w-full mt-6 bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors text-center">
                     Attiva questa offerta
                   </Link>
                 </div>
@@ -188,9 +199,21 @@ export default function ConfrontaTelefoniaPage() {
         </div>
       </section>
 
+      {/* Footer Pogio */}
       <footer className="bg-gray-900 text-white py-8 mt-12">
         <div className="max-w-6xl mx-auto px-4 text-center">
-          <p className="text-gray-400">© 2026 Comparatore Utility. Tutti i diritti riservati.</p>
+          <div className="flex items-center justify-center gap-2 mb-4">
+            <div className="bg-blue-600 text-white p-2 rounded-lg">
+              <Zap className="h-5 w-5" />
+            </div>
+            <div className="text-left">
+              <span className="text-xl font-bold">Pogio</span>
+              <p className="text-xs text-gray-400 -mt-1">Confronta e risparmia</p>
+            </div>
+          </div>
+          <p className="text-gray-400 text-sm">
+            © 2026 Pogio. Tutti i diritti riservati.
+          </p>
         </div>
       </footer>
     </div>
