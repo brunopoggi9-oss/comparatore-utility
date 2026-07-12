@@ -4,6 +4,22 @@ import { useState, useEffect } from 'react';
 import { X, Check, Settings } from 'lucide-react';
 import Link from 'next/link';
 
+// Dichiaro gtag come variabile globale
+declare global {
+  interface Window {
+    dataLayer: any[];
+  }
+}
+
+function loadGoogleAnalytics() {
+  window.dataLayer = window.dataLayer || [];
+  function gtag(...args: any[]) {
+    window.dataLayer.push(args);
+  }
+  gtag('js', new Date());
+  gtag('config', 'G-CW08FD0Y27');
+}
+
 export default function CookieBanner() {
   const [showBanner, setShowBanner] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
@@ -22,10 +38,7 @@ export default function CookieBanner() {
       setPreferences(savedPreferences);
       
       if (savedPreferences.analytics) {
-        (window as any).dataLayer = (window as any).dataLayer || [];
-        function gtag(){(window as any).dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-XXXXXXXXXX');
+        loadGoogleAnalytics();
       }
     }
   }, []);
@@ -40,10 +53,7 @@ export default function CookieBanner() {
     localStorage.setItem('pogio_cookie_consent', JSON.stringify(allPreferences));
     setShowBanner(false);
     
-    (window as any).dataLayer = (window as any).dataLayer || [];
-    function gtag(){(window as any).dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-XXXXXXXXXX');
+    loadGoogleAnalytics();
   };
 
   const handleRejectNonEssential = () => {
@@ -63,10 +73,7 @@ export default function CookieBanner() {
     setShowBanner(false);
     
     if (preferences.analytics) {
-      (window as any).dataLayer = (window as any).dataLayer || [];
-      function gtag(){(window as any).dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-XXXXXXXXXX');
+      loadGoogleAnalytics();
     }
   };
 
@@ -170,4 +177,39 @@ export default function CookieBanner() {
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <h3 className="font-bold text-gray-900 mb-1">Cookie Marketing</h3>
-                      <p className="text
+                      <p className="text-sm text-gray-600">
+                        Attualmente non utilizziamo cookie di marketing.
+                      </p>
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={preferences.marketing}
+                      onChange={(e) => setPreferences({...preferences, marketing: e.target.checked})}
+                      className="h-5 w-5 text-blue-600 rounded cursor-pointer"
+                      disabled
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-3">
+                <button
+                  onClick={() => setShowSettings(false)}
+                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                >
+                  Annulla
+                </button>
+                <button
+                  onClick={handleSavePreferences}
+                  className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                  Salva preferenze
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
