@@ -1,6 +1,7 @@
 import './globals.css';
 import { Metadata } from 'next';
    import GoogleAnalytics from '../components/GoogleAnalytics';
+import CookieBanner from '../components/CookieBanner';
 
 export const metadata: Metadata = {
   title: 'Pogio - Confronta e risparmia su Luce, Gas e Telefonia',
