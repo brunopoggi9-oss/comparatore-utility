@@ -118,7 +118,7 @@ export default function Home() {
 
             {step === 1 && (
               <div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-2 text-center">Chi sei?</h2>
+   <h2 className="text-2xl font-bold text-gray-900 mb-2 text-center">Che tipo di utente sei?</h2>               
                 <p className="text-gray-600 text-center mb-8">Seleziona il tipo di utenza</p>
                 
                 <div className="grid md:grid-cols-2 gap-4">
