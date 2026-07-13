@@ -1,6 +1,6 @@
 import Papa from 'papaparse';
 
-const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRIMhlhVIYZaka1OhrEOHbPU-lhK6tq7nKiSF4etbvbdT8pORlFocO-L5kwOhLDW7LgpzCaQnqk9AXN/pub?output=csv';
+const SHEET_URL = 'https://docs.google.com/spreadsheets/d/1gqt7M7LjGXtuj1mzS8WVEHIBcQJeFtLN1SxHMk4JM2k/edit?gid=0#gid=0:~:text=https%3A//docs.google.com/spreadsheets/d/e/2PACX%2D1vRIMhlhVIYZaka1OhrEOHbPU%2DlhK6tq7nKiSF4etbvbdT8pORlFocO%2DL5kwOhLDW7LgpzCaQnqk9AXN/pub%3Foutput%3Dcsv';
 
 export interface Offerta {
   id: string;
