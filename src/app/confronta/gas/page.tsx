@@ -2,51 +2,31 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Flame, TrendingDown, Check, ShieldCheck, Zap } from 'lucide-react';
-
-const offerteGas = [
-  {
-    id: 1,
-    nome: 'Gas Fisso 24',
-    gestore: 'Eni Plenitude',
-    prezzoSmc: 0.45,
-    pcv: 120,
-    durata: 24,
-    metodi: ['IBAN', 'BOLLETTINO'],
-    features: ['Prezzo bloccato 24 mesi', 'Assistenza 24/7', 'Prima bolletta scontata'],
-  },
-  {
-    id: 2,
-    nome: 'Gas Variabile',
-    gestore: 'Enel Energia',
-    prezzoSmc: 0.42,
-    pcv: 100,
-    durata: 0,
-    metodi: ['IBAN'],
-    features: ['Prezzo variabile PSV', 'Nessun vincolo', 'Cambia quando vuoi'],
-  },
-  {
-    id: 3,
-    nome: 'Gas Green',
-    gestore: 'A2A Energia',
-    prezzoSmc: 0.48,
-    pcv: 90,
-    durata: 12,
-    metodi: ['IBAN', 'BOLLETTINO', 'CARTA'],
-    features: ['Gas da fonti rinnovabili', 'Prezzo fisso 12 mesi', 'No costi attivazione'],
-  },
-];
+import { Flame, TrendingDown, Check, ShieldCheck, Zap } from 'lucide-react';
+import { getOfferte, Offerta } from '@/lib/offerte';
 
 export default function ConfrontaGasPage() {
   const [step, setStep] = useState(1);
   const [consumo, setConsumo] = useState('');
   const [spesa, setSpesa] = useState('');
   const [risultati, setRisultati] = useState<any[]>([]);
+  const [offerte, setOfferte] = useState<Offerta[]>([]);
+  const [loading, setLoading] = useState(true);
   
   const [tipoUtenza, setTipoUtenza] = useState('Privato');
   const [metodoPagamento, setMetodoPagamento] = useState('IBAN');
 
   useEffect(() => {
+    console.log('Caricamento offerte gas...');
+    getOfferte('gas').then((data) => {
+      console.log('Offerte gas caricate:', data);
+      setOfferte(data);
+      setLoading(false);
+    }).catch((error) => {
+      console.error('Errore nel caricamento offerte gas:', error);
+      setLoading(false);
+    });
+    
     const params = new URLSearchParams(window.location.search);
     setTipoUtenza(params.get('tipo') || 'Privato');
     setMetodoPagamento(params.get('pagamento') || 'IBAN');
@@ -61,12 +41,12 @@ export default function ConfrontaGasPage() {
       return;
     }
 
-    const offerteFiltrate = offerteGas.filter((offerta) => 
+    const offerteFiltrate = offerte.filter((offerta) => 
       offerta.metodi.includes(metodoPagamento)
     );
 
     const offerteConRisparmio = offerteFiltrate.map((offerta) => {
-      const costoAnnuo = consumoNum * offerta.prezzoSmc + offerta.pcv;
+      const costoAnnuo = (consumoNum * offerta.prezzo) + offerta.costo_fisso;
       const risparmio = spesaNum - costoAnnuo;
       return { ...offerta, costoAnnuo, risparmio };
     });
@@ -76,6 +56,17 @@ export default function ConfrontaGasPage() {
     setRisultati(offerteConRisparmio);
     setStep(2);
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Caricamento offerte in corso...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -236,12 +227,12 @@ export default function ConfrontaGasPage() {
                     </div>
                     <div>
                       <p className="text-sm text-gray-500">Prezzo Smc</p>
-                      <p className="text-xl font-bold">{offerta.prezzoSmc}€</p>
+                      <p className="text-xl font-bold">{offerta.prezzo}€</p>
                     </div>
                   </div>
 
                   <div className="mt-4 space-y-2">
-                    {offerta.features.map((feature: string, i: number) => (
+                    {offerta.vantaggi.map((feature: string, i: number) => (
                       <div key={i} className="flex items-center gap-2">
                         <Check className="h-4 w-4 text-green-600 flex-shrink-0" />
                         <span className="text-sm text-gray-700">{feature}</span>
@@ -297,11 +288,6 @@ export default function ConfrontaGasPage() {
           </div>
           <p className="text-gray-400 text-sm">
             © 2026 Pogio. Tutti i diritti riservati.
-           <div className="mt-4 text-sm text-gray-500">
-  <a href="mailto:info@pogio.it" className="hover:text-blue-400">info@pogio.it</a>
-  <span className="mx-2">|</span>
-  <Link href="/privacy" className="hover:text-blue-400">Privacy Policy</Link>
-</div>
           </p>
         </div>
       </footer>
