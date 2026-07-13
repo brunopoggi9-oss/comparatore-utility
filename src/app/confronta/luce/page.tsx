@@ -196,7 +196,9 @@ export default function ConfrontaLucePage() {
                     <span className="font-medium">Durata:</span>{' '}
                     {offerta.durata === 0 ? <span className="text-green-700 font-semibold">Senza vincoli</span> : <span>{offerta.durata} mesi</span>}
                   </div>
-                  <Link href="/attivazione" className="block w-full mt-6 bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors text-center">
+                  <Link href={`/attivazione?offerta=${encodeURIComponent(offerta.nome + ' - ' + offerta.gestore)}`} className="block w-full mt-6 bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors text-center">
+  Attiva questa offerta
+</Link>
                     Attiva questa offerta
                   </Link>
                 </div>
