@@ -2,53 +2,30 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Smartphone, TrendingDown, Check, ShieldCheck, Zap } from 'lucide-react';
-
-const offerteTelefonia = [
-  { 
-    id: 1, 
-    nome: 'Fibra Ultra 1 Giga', 
-    gestore: 'TIM', 
-    prezzoMensile: 29.90, 
-    giga: 'Illimitati', 
-    minuti: 'Illimitati', 
-    durata: 12, 
-    metodi: ['IBAN', 'BOLLETTINO', 'CARTA'],
-    features: ['Fibra FTTH 1 Gbps', 'Giga e minuti illimitati', 'Router incluso'] 
-  },
-  { 
-    id: 2, 
-    nome: 'Fibra Casa 500', 
-    gestore: 'Vodafone', 
-    prezzoMensile: 24.90, 
-    giga: 'Illimitati', 
-    minuti: 'Illimitati', 
-    durata: 0, 
-    metodi: ['IBAN', 'CARTA'],
-    features: ['Fibra 500 Mbps', 'Nessun vincolo', 'Installazione gratuita'] 
-  },
-  { 
-    id: 3, 
-    nome: 'Super Fibra', 
-    gestore: 'Fastweb', 
-    prezzoMensile: 27.90, 
-    giga: 'Illimitati', 
-    minuti: 'Illimitati', 
-    durata: 24, 
-    metodi: ['IBAN', 'BOLLETTINO'],
-    features: ['Fibra 1 Gbps', 'Netflix incluso 12 mesi', 'Prezzo bloccato 24 mesi'] 
-  },
-];
+import { Smartphone, TrendingDown, Check, ShieldCheck, Zap } from 'lucide-react';
+import { getOfferte, Offerta } from '@/lib/offerte';
 
 export default function ConfrontaTelefoniaPage() {
   const [step, setStep] = useState(1);
   const [spesa, setSpesa] = useState('');
   const [risultati, setRisultati] = useState<any[]>([]);
+  const [offerte, setOfferte] = useState<Offerta[]>([]);
+  const [loading, setLoading] = useState(true);
   
   const [tipoUtenza, setTipoUtenza] = useState('Privato');
   const [metodoPagamento, setMetodoPagamento] = useState('IBAN');
 
   useEffect(() => {
+    console.log('Caricamento offerte telefonia...');
+    getOfferte('telefonia').then((data) => {
+      console.log('Offerte telefonia caricate:', data);
+      setOfferte(data);
+      setLoading(false);
+    }).catch((error) => {
+      console.error('Errore nel caricamento offerte telefonia:', error);
+      setLoading(false);
+    });
+    
     const params = new URLSearchParams(window.location.search);
     setTipoUtenza(params.get('tipo') || 'Privato');
     setMetodoPagamento(params.get('pagamento') || 'IBAN');
@@ -58,12 +35,12 @@ export default function ConfrontaTelefoniaPage() {
     const spesaNum = parseFloat(spesa);
     if (!spesaNum) { alert('Inserisci la spesa mensile attuale'); return; }
     
-    const offerteFiltrate = offerteTelefonia.filter((offerta) => 
+    const offerteFiltrate = offerte.filter((offerta) => 
       offerta.metodi.includes(metodoPagamento)
     );
     
     const offerteConRisparmio = offerteFiltrate.map((offerta) => {
-      const costoAnnuo = offerta.prezzoMensile * 12;
+      const costoAnnuo = offerta.prezzo * 12;
       const risparmio = (spesaNum * 12) - costoAnnuo;
       return { ...offerta, costoAnnuo, risparmio };
     });
@@ -71,6 +48,17 @@ export default function ConfrontaTelefoniaPage() {
     setRisultati(offerteConRisparmio);
     setStep(2);
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Caricamento offerte in corso...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -163,12 +151,12 @@ export default function ConfrontaTelefoniaPage() {
                     </div>
                   </div>
                   <div className="grid grid-cols-3 gap-4 py-4 border-y border-gray-200">
-                    <div><p className="text-sm text-gray-500">Costo mensile</p><p className="text-xl font-bold">{offerta.prezzoMensile}€</p></div>
-                    <div><p className="text-sm text-gray-500">Giga</p><p className="text-xl font-bold">{offerta.giga}</p></div>
-                    <div><p className="text-sm text-gray-500">Minuti</p><p className="text-xl font-bold">{offerta.minuti}</p></div>
+                    <div><p className="text-sm text-gray-500">Costo mensile</p><p className="text-xl font-bold">{offerta.prezzo}€</p></div>
+                    <div><p className="text-sm text-gray-500">Giga</p><p className="text-xl font-bold">Illimitati</p></div>
+                    <div><p className="text-sm text-gray-500">Minuti</p><p className="text-xl font-bold">Illimitati</p></div>
                   </div>
                   <div className="mt-4 space-y-2">
-                    {offerta.features.map((feature: string, i: number) => (
+                    {offerta.vantaggi.map((feature: string, i: number) => (
                       <div key={i} className="flex items-center gap-2">
                         <Check className="h-4 w-4 text-green-600 flex-shrink-0" />
                         <span className="text-sm text-gray-700">{feature}</span>
@@ -213,11 +201,6 @@ export default function ConfrontaTelefoniaPage() {
           </div>
           <p className="text-gray-400 text-sm">
             © 2026 Pogio. Tutti i diritti riservati.
-           <div className="mt-4 text-sm text-gray-500">
-  <a href="mailto:info@pogio.it" className="hover:text-blue-400">info@pogio.it</a>
-  <span className="mx-2">|</span>
-  <Link href="/privacy" className="hover:text-blue-400">Privacy Policy</Link>
-</div>
           </p>
         </div>
       </footer>
