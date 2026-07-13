@@ -16,10 +16,14 @@ export default function ConfrontaLucePage() {
   const [tipoUtenza, setTipoUtenza] = useState('Privato');
   const [metodoPagamento, setMetodoPagamento] = useState('IBAN');
 
-  // Carica le offerte dal foglio Google all'apertura della pagina
   useEffect(() => {
+    console.log('Caricamento offerte luce...');
     getOfferte('luce').then((data) => {
+      console.log('Offerte caricate:', data);
       setOfferte(data);
+      setLoading(false);
+    }).catch((error) => {
+      console.error('Errore nel caricamento offerte:', error);
       setLoading(false);
     });
     
@@ -42,7 +46,6 @@ export default function ConfrontaLucePage() {
     );
 
     const offerteConRisparmio = offerteFiltrate.map((offerta) => {
-      // Calcolo: (Consumo * Prezzo kWh) + Costo Fisso Annuo (PCV)
       const costoAnnuo = (consumoNum * offerta.prezzo) + offerta.costo_fisso;
       const risparmio = spesaNum - costoAnnuo;
       return { ...offerta, costoAnnuo, risparmio };
@@ -67,7 +70,6 @@ export default function ConfrontaLucePage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header Pogio */}
       <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/" className="inline-flex items-center gap-2">
@@ -86,14 +88,11 @@ export default function ConfrontaLucePage() {
         </div>
       </header>
 
-      {/* Hero Section Luce */}
       <section className="bg-gradient-to-br from-blue-600 to-blue-800 text-white py-12">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <Zap className="h-16 w-16 mx-auto mb-4" />
           <h1 className="text-4xl font-bold mb-2">Confronta le offerte Luce</h1>
-          <p className="text-lg text-blue-100">
-            Inserisci i tuoi consumi e scopri quanto puoi risparmiare
-          </p>
+          <p className="text-lg text-blue-100">Inserisci i tuoi consumi e scopri quanto puoi risparmiare</p>
         </div>
       </section>
 
@@ -196,9 +195,12 @@ export default function ConfrontaLucePage() {
                     <span className="font-medium">Durata:</span>{' '}
                     {offerta.durata === 0 ? <span className="text-green-700 font-semibold">Senza vincoli</span> : <span>{offerta.durata} mesi</span>}
                   </div>
-                  <Link href={`/attivazione?offerta=${encodeURIComponent(offerta.nome + ' - ' + offerta.gestore)}`} className="block w-full mt-6 bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors text-center">
-  Attiva questa offerta
-</Link>
+                  
+                  {/* LINK DI ATTIVAZIONE AGGIORNATO CON IL NOME DELL'OFFERTA */}
+                  <Link 
+                    href={`/attivazione?offerta=${encodeURIComponent(offerta.nome + ' - ' + offerta.gestore)}`} 
+                    className="block w-full mt-6 bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors text-center"
+                  >
                     Attiva questa offerta
                   </Link>
                 </div>
