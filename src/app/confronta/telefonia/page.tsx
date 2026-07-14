@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Smartphone, TrendingDown, Check, ShieldCheck, Zap } from 'lucide-react';
+import { Smartphone, TrendingDown, Check, ShieldCheck, AlertCircle } from 'lucide-react';
 import { getOfferte, Offerta } from '@/lib/offerte';
 
 export default function ConfrontaTelefoniaPage() {
@@ -33,12 +33,24 @@ export default function ConfrontaTelefoniaPage() {
     const spesaNum = parseFloat(spesa);
     if (!spesaNum) { alert('Inserisci la spesa mensile attuale'); return; }
     
-    const offerteFiltrate = offerte.filter((offerta) => offerta.metodi.includes(metodoPagamento));
-    const offerteConRisparmio = offerteFiltrate.map((offerta) => {
-      const costoAnnuo = offerta.prezzo * 12;
-      return { ...offerta, costoAnnuo, risparmio: (spesaNum * 12) - costoAnnuo };
+    // FORMULA DIRETTA PER TELEFONIA (Nessun 45%, confronto puro)
+    const offerteConRisparmio = offerte.map((offerta) => {
+      const metodiOfferta = offerta.metodi.map(m => m.toUpperCase().trim());
+      const metodoUtente = metodoPagamento.toUpperCase().trim();
+      const accettaMetodo = metodiOfferta.includes(metodoUtente);
+      
+      const spesaAnnualeAttuale = spesaNum * 12;
+      const costoAnnuoNuovo = offerta.prezzo * 12; // Il costo fisso per telefonia è solitamente 0 o incluso
+      const risparmio = spesaAnnualeAttuale - costoAnnuoNuovo;
+
+      return { ...offerta, costoAnnuo: costoAnnuoNuovo, risparmio, accettaMetodo };
     });
-    offerteConRisparmio.sort((a, b) => b.risparmio - a.risparmio);
+
+    offerteConRisparmio.sort((a, b) => {
+      if (a.accettaMetodo === b.accettaMetodo) return b.risparmio - a.risparmio;
+      return a.accettaMetodo ? -1 : 1;
+    });
+
     setRisultati(offerteConRisparmio);
     setStep(2);
   };
@@ -92,8 +104,18 @@ export default function ConfrontaTelefoniaPage() {
 
           {step === 2 && (
             <div className="space-y-6">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold">Risultati</h2>
+              <div className="mb-6">
+                <h2 className="text-2xl font-bold mb-2">Le migliori offerte per te</h2>
+                <div className="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded-r-lg flex items-start gap-3 mt-4">
+                  <AlertCircle className="h-5 w-5 text-yellow-600 flex-shrink-0 mt-0.5" />
+                  <p className="text-xs text-yellow-800">
+                    <strong>Nota sulla trasparenza:</strong> Il risparmio indicato è calcolato confrontando direttamente la tua spesa mensile attuale con il canone mensile della nuova offerta. Non sono applicati coefficienti di stima poiché le bollette telefoniche non includono oneri di sistema o costi di trasporto variabili come luce e gas.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-bold">Risultati ({risultati.length})</h2>
                 <button onClick={() => setStep(1)} className="text-purple-600 hover:text-purple-800 font-medium">Modifica dati</button>
               </div>
 
@@ -104,13 +126,16 @@ export default function ConfrontaTelefoniaPage() {
               )}
 
               {risultati.map((offerta, index) => (
-                <div key={offerta.id} className={`bg-white rounded-xl shadow-sm p-6 ${index === 0 ? 'ring-2 ring-green-500' : ''}`}>
-                  {index === 0 && <div className="inline-block bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full mb-4">Miglior offerta</div>}
+                <div key={offerta.id} className={`bg-white rounded-xl shadow-sm p-6 ${index === 0 && offerta.accettaMetodo ? 'ring-2 ring-green-500' : ''} ${!offerta.accettaMetodo ? 'opacity-75' : ''}`}>
+                  {index === 0 && offerta.accettaMetodo && <div className="inline-block bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full mb-4">Miglior offerta</div>}
                   <div className="flex items-start justify-between mb-4">
                     <div><h3 className="text-xl font-bold">{offerta.nome}</h3><p className="text-gray-600">{offerta.gestore}</p></div>
                     <div className="text-right">
                       <p className="text-sm text-gray-500">Risparmio annuo</p>
-                      <p className="text-2xl font-bold text-green-600 flex items-center justify-end"><TrendingDown className="h-5 w-5 mr-1" />+{offerta.risparmio.toFixed(0)}€</p>
+                      <p className={`text-2xl font-bold flex items-center justify-end ${offerta.risparmio > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                        <TrendingDown className="h-5 w-5 mr-1" />
+                        {offerta.risparmio > 0 ? '+' : ''}{offerta.risparmio.toFixed(0)}€
+                      </p>
                     </div>
                   </div>
                   <div className="grid grid-cols-3 gap-4 py-4 border-y border-gray-200">
@@ -123,8 +148,23 @@ export default function ConfrontaTelefoniaPage() {
                       <div key={i} className="flex items-center gap-2"><Check className="h-4 w-4 text-green-600 flex-shrink-0" /><span className="text-sm text-gray-700">{feature}</span></div>
                     ))}
                   </div>
-                  <Link href={`/attivazione?offerta=${encodeURIComponent(offerta.nome + ' - ' + offerta.gestore)}`} className="block w-full mt-6 bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors text-center">
-                    Attiva questa offerta
+                  
+                  {!offerta.accettaMetodo && (
+                    <div className="mt-4 bg-red-50 text-red-700 text-xs font-bold px-3 py-2 rounded-lg border border-red-200">
+                      ⚠️ Questa offerta non accetta {metodoPagamento}
+                    </div>
+                  )}
+                  
+                  <Link 
+                    href={offerta.accettaMetodo ? `/attivazione?offerta=${encodeURIComponent(offerta.nome + ' - ' + offerta.gestore)}` : '#'}
+                    className={`block w-full mt-4 py-3 rounded-lg font-semibold text-center transition-colors ${
+                      offerta.accettaMetodo 
+                        ? 'bg-purple-600 text-white hover:bg-purple-700' 
+                        : 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                    }`}
+                    onClick={(e) => !offerta.accettaMetodo && e.preventDefault()}
+                  >
+                    {offerta.accettaMetodo ? 'Attiva questa offerta' : 'Metodo non compatibile'}
                   </Link>
                 </div>
               ))}
