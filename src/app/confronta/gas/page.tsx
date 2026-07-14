@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Flame, TrendingDown, Check, ShieldCheck, Zap } from 'lucide-react';
+import { Flame, TrendingDown, Check, ShieldCheck, AlertCircle } from 'lucide-react';
 import { getOfferte, Offerta } from '@/lib/offerte';
 
 export default function ConfrontaGasPage() {
@@ -35,12 +35,25 @@ export default function ConfrontaGasPage() {
     const spesaNum = parseFloat(spesa);
     if (!consumoNum || !spesaNum) { alert('Inserisci consumo e spesa attuale'); return; }
 
-    const offerteFiltrate = offerte.filter((offerta) => offerta.metodi.includes(metodoPagamento));
-    const offerteConRisparmio = offerteFiltrate.map((offerta) => {
-      const costoAnnuo = (consumoNum * offerta.prezzo) + offerta.costo_fisso;
-      return { ...offerta, costoAnnuo, risparmio: spesaNum - costoAnnuo };
+    // FORMULA REALISTICA PER IL GAS (45% costi fissi)
+    const offerteConRisparmio = offerte.map((offerta) => {
+      const metodiOfferta = offerta.metodi.map(m => m.toUpperCase().trim());
+      const metodoUtente = metodoPagamento.toUpperCase().trim();
+      const accettaMetodo = metodiOfferta.includes(metodoUtente);
+      
+      const costiFissiStimati = spesaNum * 0.45; 
+      const costoEnergiaNuova = (consumoNum * offerta.prezzo) + offerta.costo_fisso;
+      const nuovaBollettaTotale = costiFissiStimati + costoEnergiaNuova;
+      const risparmio = spesaNum - nuovaBollettaTotale;
+
+      return { ...offerta, costoAnnuo: nuovaBollettaTotale, risparmio, accettaMetodo };
     });
-    offerteConRisparmio.sort((a, b) => b.risparmio - a.risparmio);
+
+    offerteConRisparmio.sort((a, b) => {
+      if (a.accettaMetodo === b.accettaMetodo) return b.risparmio - a.risparmio;
+      return a.accettaMetodo ? -1 : 1;
+    });
+
     setRisultati(offerteConRisparmio);
     setStep(2);
   };
@@ -90,6 +103,7 @@ export default function ConfrontaGasPage() {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Spesa annua attuale (€)</label>
                   <input type="number" value={spesa} onChange={(e) => setSpesa(e.target.value)} placeholder="Es. 500" className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500" />
+                  <p className="text-sm text-gray-500 mt-1">Totale di tutte le bollette dell'ultimo anno (IVA e tasse incluse)</p>
                 </div>
                 <button onClick={calcolaRisparmio} className="w-full bg-orange-600 text-white py-4 rounded-lg font-semibold hover:bg-orange-700 transition-colors">Confronta le offerte</button>
               </div>
@@ -98,8 +112,18 @@ export default function ConfrontaGasPage() {
 
           {step === 2 && (
             <div className="space-y-6">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold">Risultati</h2>
+              <div className="mb-6">
+                <h2 className="text-2xl font-bold mb-2">Le migliori offerte per te</h2>
+                <div className="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded-r-lg flex items-start gap-3 mt-4">
+                  <AlertCircle className="h-5 w-5 text-yellow-600 flex-shrink-0 mt-0.5" />
+                  <p className="text-xs text-yellow-800">
+                    <strong>Nota sulla trasparenza:</strong> Il risparmio indicato è una stima sul totale della tua futura bolletta. Il calcolo confronta la tua spesa attuale con il costo della nuova offerta (Materia Gas + PCV), applicando una quota stimata di trasporti, oneri e imposte (circa il 45% della tua spesa attuale) che si applicano a tutte le offerte in modo simile.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-bold">Risultati ({risultati.length})</h2>
                 <button onClick={() => setStep(1)} className="text-orange-600 hover:text-orange-800 font-medium">Modifica dati</button>
               </div>
 
@@ -110,26 +134,44 @@ export default function ConfrontaGasPage() {
               )}
 
               {risultati.map((offerta, index) => (
-                <div key={offerta.id} className={`bg-white rounded-xl shadow-sm p-6 ${index === 0 ? 'ring-2 ring-green-500' : ''}`}>
-                  {index === 0 && <div className="inline-block bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full mb-4">Miglior offerta</div>}
+                <div key={offerta.id} className={`bg-white rounded-xl shadow-sm p-6 ${index === 0 && offerta.accettaMetodo ? 'ring-2 ring-green-500' : ''} ${!offerta.accettaMetodo ? 'opacity-75' : ''}`}>
+                  {index === 0 && offerta.accettaMetodo && <div className="inline-block bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full mb-4">Miglior offerta</div>}
                   <div className="flex items-start justify-between mb-4">
                     <div><h3 className="text-xl font-bold">{offerta.nome}</h3><p className="text-gray-600">{offerta.gestore}</p></div>
                     <div className="text-right">
-                      <p className="text-sm text-gray-500">Risparmio annuo</p>
-                      <p className="text-2xl font-bold text-green-600 flex items-center justify-end"><TrendingDown className="h-5 w-5 mr-1" />+{offerta.risparmio.toFixed(0)}€</p>
+                      <p className="text-sm text-gray-500">Risparmio annuo stimato</p>
+                      <p className={`text-2xl font-bold flex items-center justify-end ${offerta.risparmio > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                        <TrendingDown className="h-5 w-5 mr-1" />
+                        {offerta.risparmio > 0 ? '+' : ''}{offerta.risparmio.toFixed(0)}€
+                      </p>
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-4 py-4 border-y border-gray-200">
-                    <div><p className="text-sm text-gray-500">Costo annuo</p><p className="text-xl font-bold">{offerta.costoAnnuo.toFixed(0)}€</p></div>
-                    <div><p className="text-sm text-gray-500">Prezzo Smc</p><p className="text-xl font-bold">{offerta.prezzo}€</p></div>
+                    <div><p className="text-sm text-gray-500">Nuova bolletta stimata</p><p className="text-xl font-bold">{offerta.costoAnnuo.toFixed(0)}€</p></div>
+                    <div><p className="text-sm text-gray-500">Prezzo Smc + Fisso</p><p className="text-xl font-bold">{offerta.prezzo}€ + {offerta.costo_fisso}€</p></div>
                   </div>
                   <div className="mt-4 space-y-2">
                     {offerta.vantaggi.map((feature: string, i: number) => (
                       <div key={i} className="flex items-center gap-2"><Check className="h-4 w-4 text-green-600 flex-shrink-0" /><span className="text-sm text-gray-700">{feature}</span></div>
                     ))}
                   </div>
-                  <Link href={`/attivazione?offerta=${encodeURIComponent(offerta.nome + ' - ' + offerta.gestore)}`} className="block w-full mt-6 bg-orange-600 text-white py-3 rounded-lg font-semibold hover:bg-orange-700 transition-colors text-center">
-                    Attiva questa offerta
+                  
+                  {!offerta.accettaMetodo && (
+                    <div className="mt-4 bg-red-50 text-red-700 text-xs font-bold px-3 py-2 rounded-lg border border-red-200">
+                      ⚠️ Questa offerta non accetta {metodoPagamento}
+                    </div>
+                  )}
+                  
+                  <Link 
+                    href={offerta.accettaMetodo ? `/attivazione?offerta=${encodeURIComponent(offerta.nome + ' - ' + offerta.gestore)}` : '#'}
+                    className={`block w-full mt-4 py-3 rounded-lg font-semibold text-center transition-colors ${
+                      offerta.accettaMetodo 
+                        ? 'bg-orange-600 text-white hover:bg-orange-700' 
+                        : 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                    }`}
+                    onClick={(e) => !offerta.accettaMetodo && e.preventDefault()}
+                  >
+                    {offerta.accettaMetodo ? 'Attiva questa offerta' : 'Metodo non compatibile'}
                   </Link>
                 </div>
               ))}
