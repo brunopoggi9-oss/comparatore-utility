@@ -19,7 +19,7 @@ export default function ConfrontaLucePage() {
   useEffect(() => {
     console.log('Caricamento offerte luce...');
     getOfferte('luce').then((data) => {
-      console.log('Offerte caricate:', data);
+      console.log('Offerte caricate dal foglio:', data);
       setOfferte(data);
       setLoading(false);
     }).catch((error) => {
@@ -41,21 +41,29 @@ export default function ConfrontaLucePage() {
       return;
     }
 
-    const offerteFiltrate = offerte.filter((offerta) => 
-      offerta.metodi.includes(metodoPagamento)
-    );
+    console.log('Metodo selezionato:', metodoPagamento);
 
-    const offerteConRisparmio = offerteFiltrate.map((offerta) => {
-          console.log('Tutte le offerte caricate:', offerte);
-    console.log('Metodo pagamento selezionato:', metodoPagamento);
-    console.log('Offerte con calcolo:', offerteConRisparmio);
+    // MOSTRIAMO TUTTE LE OFFERTE, non filtriamo più!
+    const offerteConRisparmio = offerte.map((offerta) => {
+      // Controllo robusto: converte tutto in maiuscolo e toglie spazi
+      const metodiOfferta = offerta.metodi.map(m => m.toUpperCase().trim());
+      const metodoUtente = metodoPagamento.toUpperCase().trim();
+      const accettaMetodo = metodiOfferta.includes(metodoUtente);
+      
       const costoAnnuo = (consumoNum * offerta.prezzo) + offerta.costo_fisso;
       const risparmio = spesaNum - costoAnnuo;
-      return { ...offerta, costoAnnuo, risparmio };
+      return { ...offerta, costoAnnuo, risparmio, accettaMetodo };
     });
 
-    offerteConRisparmio.sort((a, b) => b.risparmio - a.risparmio);
+    // Ordina: prima quelle che accettano il metodo (per risparmio decrescente), poi le altre
+    offerteConRisparmio.sort((a, b) => {
+      if (a.accettaMetodo === b.accettaMetodo) {
+        return b.risparmio - a.risparmio;
+      }
+      return a.accettaMetodo ? -1 : 1;
+    });
 
+    console.log('Risultati finali:', offerteConRisparmio);
     setRisultati(offerteConRisparmio);
     setStep(2);
   };
@@ -146,20 +154,13 @@ export default function ConfrontaLucePage() {
               </div>
 
               <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-bold">Risultati</h2>
+                <h2 className="text-2xl font-bold">Risultati ({risultati.length})</h2>
                 <button onClick={() => setStep(1)} className="text-blue-600 hover:text-blue-800 font-medium">Modifica dati</button>
               </div>
 
-              {risultati.length === 0 && (
-                <div className="bg-yellow-50 border-l-4 border-yellow-500 p-6 rounded-r-lg">
-                  <p className="text-yellow-800 font-medium">Nessuna offerta trovata per il metodo di pagamento "{metodoPagamento}".</p>
-                  <p className="text-sm text-yellow-700 mt-2">Prova a selezionare un altro metodo di pagamento nella homepage.</p>
-                </div>
-              )}
-
               {risultati.map((offerta, index) => (
-                <div key={offerta.id} className={`bg-white rounded-xl shadow-sm p-6 ${index === 0 ? 'ring-2 ring-green-500' : ''}`}>
-                  {index === 0 && <div className="inline-block bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full mb-4">Miglior offerta</div>}
+                <div key={offerta.id} className={`bg-white rounded-xl shadow-sm p-6 ${index === 0 && offerta.accettaMetodo ? 'ring-2 ring-green-500' : ''} ${!offerta.accettaMetodo ? 'opacity-75' : ''}`}>
+                  {index === 0 && offerta.accettaMetodo && <div className="inline-block bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full mb-4">Miglior offerta</div>}
                   <div className="flex items-start justify-between mb-4">
                     <div>
                       <h3 className="text-xl font-bold">{offerta.nome}</h3>
@@ -167,8 +168,9 @@ export default function ConfrontaLucePage() {
                     </div>
                     <div className="text-right">
                       <p className="text-sm text-gray-500">Risparmio annuo</p>
-                      <p className="text-2xl font-bold text-green-600 flex items-center justify-end">
-                        <TrendingDown className="h-5 w-5 mr-1" />+{offerta.risparmio.toFixed(0)}€
+                      <p className={`text-2xl font-bold flex items-center justify-end ${offerta.risparmio > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                        <TrendingDown className="h-5 w-5 mr-1" />
+                        {offerta.risparmio > 0 ? '+' : ''}{offerta.risparmio.toFixed(0)}€
                       </p>
                     </div>
                   </div>
@@ -199,12 +201,22 @@ export default function ConfrontaLucePage() {
                     {offerta.durata === 0 ? <span className="text-green-700 font-semibold">Senza vincoli</span> : <span>{offerta.durata} mesi</span>}
                   </div>
                   
-                  {/* LINK DI ATTIVAZIONE AGGIORNATO CON IL NOME DELL'OFFERTA */}
+                  {!offerta.accettaMetodo && (
+                    <div className="mt-4 bg-red-50 text-red-700 text-xs font-bold px-3 py-2 rounded-lg border border-red-200">
+                      ⚠️ Questa offerta non accetta {metodoPagamento}
+                    </div>
+                  )}
+                  
                   <Link 
-                    href={`/attivazione?offerta=${encodeURIComponent(offerta.nome + ' - ' + offerta.gestore)}`} 
-                    className="block w-full mt-6 bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors text-center"
+                    href={offerta.accettaMetodo ? `/attivazione?offerta=${encodeURIComponent(offerta.nome + ' - ' + offerta.gestore)}` : '#'}
+                    className={`block w-full mt-4 py-3 rounded-lg font-semibold text-center transition-colors ${
+                      offerta.accettaMetodo 
+                        ? 'bg-blue-600 text-white hover:bg-blue-700' 
+                        : 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                    }`}
+                    onClick={(e) => !offerta.accettaMetodo && e.preventDefault()}
                   >
-                    Attiva questa offerta
+                    {offerta.accettaMetodo ? 'Attiva questa offerta' : 'Metodo non compatibile'}
                   </Link>
                 </div>
               ))}
