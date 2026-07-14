@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Zap, TrendingDown, Check, ShieldCheck } from 'lucide-react';
+import { Zap, TrendingDown, Check, ShieldCheck, AlertCircle } from 'lucide-react';
 import { getOfferte, Offerta } from '@/lib/offerte';
 
 export default function ConfrontaLucePage() {
@@ -17,13 +17,11 @@ export default function ConfrontaLucePage() {
   const [metodoPagamento, setMetodoPagamento] = useState('IBAN');
 
   useEffect(() => {
-    console.log('Caricamento offerte luce...');
     getOfferte('luce').then((data) => {
-      console.log('Offerte caricate dal foglio:', data);
       setOfferte(data);
       setLoading(false);
     }).catch((error) => {
-      console.error('Errore nel caricamento offerte:', error);
+      console.error('Errore caricamento luce:', error);
       setLoading(false);
     });
     
@@ -41,21 +39,28 @@ export default function ConfrontaLucePage() {
       return;
     }
 
-    console.log('Metodo selezionato:', metodoPagamento);
-
-    // MOSTRIAMO TUTTE LE OFFERTE, non filtriamo più!
+    // NUOVA FORMULA REALISTICA
     const offerteConRisparmio = offerte.map((offerta) => {
-      // Controllo robusto: converte tutto in maiuscolo e toglie spazi
       const metodiOfferta = offerta.metodi.map(m => m.toUpperCase().trim());
       const metodoUtente = metodoPagamento.toUpperCase().trim();
       const accettaMetodo = metodiOfferta.includes(metodoUtente);
       
-      const costoAnnuo = (consumoNum * offerta.prezzo) + offerta.costo_fisso;
-      const risparmio = spesaNum - costoAnnuo;
-      return { ...offerta, costoAnnuo, risparmio, accettaMetodo };
+      // 1. Stima i costi fissi (trasporti, oneri, imposte) della bolletta attuale (circa 45%)
+      const costiFissiStimati = spesaNum * 0.45; 
+      
+      // 2. Calcola il costo della Materia Energia + PCV della NUOVA offerta
+      const costoEnergiaNuova = (consumoNum * offerta.prezzo) + offerta.costo_fisso;
+      
+      // 3. Stima la nuova bolletta totale
+      const nuovaBollettaTotale = costiFissiStimati + costoEnergiaNuova;
+      
+      // 4. Calcola il risparmio reale
+      const risparmio = spesaNum - nuovaBollettaTotale;
+
+      return { ...offerta, costoAnnuo: nuovaBollettaTotale, risparmio, accettaMetodo };
     });
 
-    // Ordina: prima quelle che accettano il metodo (per risparmio decrescente), poi le altre
+    // Ordina: prima quelle compatibili (per risparmio decrescente), poi le altre
     offerteConRisparmio.sort((a, b) => {
       if (a.accettaMetodo === b.accettaMetodo) {
         return b.risparmio - a.risparmio;
@@ -63,7 +68,6 @@ export default function ConfrontaLucePage() {
       return a.accettaMetodo ? -1 : 1;
     });
 
-    console.log('Risultati finali:', offerteConRisparmio);
     setRisultati(offerteConRisparmio);
     setStep(2);
   };
@@ -84,18 +88,10 @@ export default function ConfrontaLucePage() {
       <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/" className="inline-flex items-center gap-2">
-            <div className="bg-blue-600 text-white p-2 rounded-lg">
-              <Zap className="h-5 w-5" />
-            </div>
-            <div>
-              <span className="text-xl font-bold text-gray-900">Pogio</span>
-              <p className="text-xs text-gray-500 -mt-1">Confronta e risparmia</p>
-            </div>
+            <div className="bg-blue-600 text-white p-2 rounded-lg"><Zap className="h-5 w-5" /></div>
+            <div><span className="text-xl font-bold text-gray-900">Pogio</span><p className="text-xs text-gray-500 -mt-1">Confronta e risparmia</p></div>
           </Link>
-          <div className="flex items-center gap-2 text-sm text-green-600">
-            <ShieldCheck className="h-4 w-4" />
-            <span className="hidden sm:inline">Dati al sicuro</span>
-          </div>
+          <div className="flex items-center gap-2 text-sm text-green-600"><ShieldCheck className="h-4 w-4" /><span className="hidden sm:inline">Dati al sicuro</span></div>
         </div>
       </header>
 
@@ -104,17 +100,6 @@ export default function ConfrontaLucePage() {
           <Zap className="h-16 w-16 mx-auto mb-4" />
           <h1 className="text-4xl font-bold mb-2">Confronta le offerte Luce</h1>
           <p className="text-lg text-blue-100">Inserisci i tuoi consumi e scopri quanto puoi risparmiare</p>
-        </div>
-      </section>
-
-      <section className="bg-green-50 border-l-4 border-green-500 py-4">
-        <div className="max-w-4xl mx-auto px-4">
-          <div className="flex items-center">
-            <ShieldCheck className="h-6 w-6 text-green-600 flex-shrink-0" />
-            <p className="ml-3 text-sm font-medium text-green-800">
-              <strong>I tuoi dati sono al sicuro.</strong> Non cediamo i tuoi dati a terzi.
-            </p>
-          </div>
         </div>
       </section>
 
@@ -132,11 +117,9 @@ export default function ConfrontaLucePage() {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Spesa annua attuale (€)</label>
                   <input type="number" value={spesa} onChange={(e) => setSpesa(e.target.value)} placeholder="Es. 650" className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
-                  <p className="text-sm text-gray-500 mt-1">Somma di tutte le bollette dell'ultimo anno</p>
+                  <p className="text-sm text-gray-500 mt-1">Totale di tutte le bollette dell'ultimo anno (IVA e tasse incluse)</p>
                 </div>
-                <button onClick={calcolaRisparmio} className="w-full bg-blue-600 text-white py-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
-                  Confronta le offerte
-                </button>
+                <button onClick={calcolaRisparmio} className="w-full bg-blue-600 text-white py-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors">Confronta le offerte</button>
               </div>
             </div>
           )}
@@ -145,16 +128,18 @@ export default function ConfrontaLucePage() {
             <div className="space-y-6">
               <div className="mb-6">
                 <h2 className="text-2xl font-bold mb-2">Le migliori offerte per te</h2>
-                <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg flex items-center gap-3">
-                  <ShieldCheck className="h-5 w-5 text-blue-600 flex-shrink-0" />
-                  <p className="text-sm text-blue-800">
-                    Stai confrontando offerte per <strong>{tipoUtenza === 'privato' ? 'Privati' : 'Aziende'}</strong> con pagamento tramite <strong>{metodoPagamento}</strong>.
+                
+                {/* DISCLAIMER ONESTO E TRASPARENTE */}
+                <div className="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded-r-lg flex items-start gap-3 mt-4">
+                  <AlertCircle className="h-5 w-5 text-yellow-600 flex-shrink-0 mt-0.5" />
+                  <p className="text-xs text-yellow-800">
+                    <strong>Nota sulla trasparenza:</strong> Il risparmio indicato è una stima sul totale della tua futura bolletta. Il calcolo confronta la tua spesa attuale con il costo della nuova offerta (Materia Energia + PCV), applicando una quota stimata di trasporti, oneri e imposte (circa il 45% della tua spesa attuale) che si applicano a tutte le offerte in modo simile.
                   </p>
                 </div>
               </div>
 
               <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-bold">Risultati ({risultati.length})</h2>
+                <h2 className="text-xl font-bold">Risultati ({risultati.length})</h2>
                 <button onClick={() => setStep(1)} className="text-blue-600 hover:text-blue-800 font-medium">Modifica dati</button>
               </div>
 
@@ -162,12 +147,9 @@ export default function ConfrontaLucePage() {
                 <div key={offerta.id} className={`bg-white rounded-xl shadow-sm p-6 ${index === 0 && offerta.accettaMetodo ? 'ring-2 ring-green-500' : ''} ${!offerta.accettaMetodo ? 'opacity-75' : ''}`}>
                   {index === 0 && offerta.accettaMetodo && <div className="inline-block bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full mb-4">Miglior offerta</div>}
                   <div className="flex items-start justify-between mb-4">
-                    <div>
-                      <h3 className="text-xl font-bold">{offerta.nome}</h3>
-                      <p className="text-gray-600">{offerta.gestore}</p>
-                    </div>
+                    <div><h3 className="text-xl font-bold">{offerta.nome}</h3><p className="text-gray-600">{offerta.gestore}</p></div>
                     <div className="text-right">
-                      <p className="text-sm text-gray-500">Risparmio annuo</p>
+                      <p className="text-sm text-gray-500">Risparmio annuo stimato</p>
                       <p className={`text-2xl font-bold flex items-center justify-end ${offerta.risparmio > 0 ? 'text-green-600' : 'text-red-600'}`}>
                         <TrendingDown className="h-5 w-5 mr-1" />
                         {offerta.risparmio > 0 ? '+' : ''}{offerta.risparmio.toFixed(0)}€
@@ -175,15 +157,12 @@ export default function ConfrontaLucePage() {
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-4 py-4 border-y border-gray-200">
-                    <div><p className="text-sm text-gray-500">Costo annuo</p><p className="text-xl font-bold">{offerta.costoAnnuo.toFixed(0)}€</p></div>
-                    <div><p className="text-sm text-gray-500">Prezzo kWh</p><p className="text-xl font-bold">{offerta.prezzo}€</p></div>
+                    <div><p className="text-sm text-gray-500">Nuova bolletta stimata</p><p className="text-xl font-bold">{offerta.costoAnnuo.toFixed(0)}€</p></div>
+                    <div><p className="text-sm text-gray-500">Prezzo kWh + Fisso</p><p className="text-xl font-bold">{offerta.prezzo}€ + {offerta.costo_fisso}€</p></div>
                   </div>
                   <div className="mt-4 space-y-2">
                     {offerta.vantaggi.map((feature: string, i: number) => (
-                      <div key={i} className="flex items-center gap-2">
-                        <Check className="h-4 w-4 text-green-600 flex-shrink-0" />
-                        <span className="text-sm text-gray-700">{feature}</span>
-                      </div>
+                      <div key={i} className="flex items-center gap-2"><Check className="h-4 w-4 text-green-600 flex-shrink-0" /><span className="text-sm text-gray-700">{feature}</span></div>
                     ))}
                   </div>
                   <div className="mt-4 pt-4 border-t border-gray-200">
@@ -195,10 +174,6 @@ export default function ConfrontaLucePage() {
                         </span>
                       ))}
                     </div>
-                  </div>
-                  <div className="mt-4 text-sm text-gray-600">
-                    <span className="font-medium">Durata:</span>{' '}
-                    {offerta.durata === 0 ? <span className="text-green-700 font-semibold">Senza vincoli</span> : <span>{offerta.durata} mesi</span>}
                   </div>
                   
                   {!offerta.accettaMetodo && (
@@ -227,10 +202,6 @@ export default function ConfrontaLucePage() {
 
       <footer className="bg-gray-900 text-white py-8 mt-12">
         <div className="max-w-6xl mx-auto px-4 text-center">
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <div className="bg-blue-600 text-white p-2 rounded-lg"><Zap className="h-5 w-5" /></div>
-            <div className="text-left"><span className="text-xl font-bold">Pogio</span><p className="text-xs text-gray-400 -mt-1">Confronta e risparmia</p></div>
-          </div>
           <p className="text-gray-400 text-sm">© 2026 Pogio. Tutti i diritti riservati.</p>
         </div>
       </footer>
