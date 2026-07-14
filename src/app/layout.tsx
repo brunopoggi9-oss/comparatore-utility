@@ -1,6 +1,6 @@
 import './globals.css';
 import { Metadata } from 'next';
-   import GoogleAnalytics from '../components/GoogleAnalytics';
+import GoogleAnalytics from '../components/GoogleAnalytics';
 import CookieBanner from '../components/CookieBanner';
 
 export const metadata: Metadata = {
@@ -8,6 +8,13 @@ export const metadata: Metadata = {
   description: 'Scopri le migliori offerte di luce, gas e telefonia in 30 secondi. Confronto imparziale, senza impegno. Risparmia fino a 300€ all\'anno sulle tue bollette.',
   keywords: 'comparatore offerte, offerte luce, offerte gas, offerte fibra, telefonia, risparmio bollette, confronto tariffe',
   authors: [{ name: 'Pogio' }],
+  
+  // 👇 AGGIUNTA FATTA QUI PER LA VERIFICA GOOGLE 👇
+  verification: {
+    google: '1d475449c33ee5b6', 
+  },
+  // 👆 AGGIUNTA FATTA QUI PER LA VERIFICA GOOGLE 👆
+
   openGraph: {
     title: 'Pogio - Confronta e risparmia su Luce, Gas e Telefonia',
     description: 'Scopri le migliori offerte di luce, gas e telefonia in 30 secondi. Risparmia fino a 300€ all\'anno.',
@@ -41,8 +48,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="it">
-      <body>   <GoogleAnalytics />
-         <CookieBanner />
+      <body>
+        <GoogleAnalytics />
+        <CookieBanner />
         {children}
       </body>
     </html>
