@@ -46,6 +46,9 @@ export default function ConfrontaLucePage() {
     );
 
     const offerteConRisparmio = offerteFiltrate.map((offerta) => {
+          console.log('Tutte le offerte caricate:', offerte);
+    console.log('Metodo pagamento selezionato:', metodoPagamento);
+    console.log('Offerte con calcolo:', offerteConRisparmio);
       const costoAnnuo = (consumoNum * offerta.prezzo) + offerta.costo_fisso;
       const risparmio = spesaNum - costoAnnuo;
       return { ...offerta, costoAnnuo, risparmio };
