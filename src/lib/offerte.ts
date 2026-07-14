@@ -15,7 +15,7 @@ export interface Offerta {
 }
 
 export async function getOfferte(categoria: 'luce' | 'gas' | 'telefonia'): Promise<Offerta[]> {
-  const res = await fetch(SHEET_URL);
+     const res = await fetch(SHEET_URL, { cache: 'no-store' });
   const text = await res.text();
   
   const parsed = Papa.parse(text, { 
