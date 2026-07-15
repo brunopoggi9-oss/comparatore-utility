@@ -9,11 +9,10 @@ export const metadata: Metadata = {
   keywords: 'comparatore offerte, offerte luce, offerte gas, offerte fibra, telefonia, risparmio bollette, confronto tariffe',
   authors: [{ name: 'Pogio' }],
   
-  // 👇 AGGIUNTA FATTA QUI PER LA VERIFICA GOOGLE 👇
+  // ✅ CODICE DI VERIFICA GOOGLE INSERITO QUI ✅
   verification: {
-    google: '1d475449c33ee5b6', 
+    google: '1d475449c33ee5b6',
   },
-  // 👆 AGGIUNTA FATTA QUI PER LA VERIFICA GOOGLE 👆
 
   openGraph: {
     title: 'Pogio - Confronta e risparmia su Luce, Gas e Telefonia',
