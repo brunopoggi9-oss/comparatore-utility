@@ -1,6 +1,6 @@
 import './globals.css';
 import { Metadata } from 'next';
-import GoogleAnalytics from '../components/GoogleAnalytics';
+import Script from 'next/script';
 import CookieBanner from '../components/CookieBanner';
 
 export const metadata: Metadata = {
@@ -9,9 +9,8 @@ export const metadata: Metadata = {
   keywords: 'comparatore offerte, offerte luce, offerte gas, offerte fibra, telefonia, risparmio bollette, confronto tariffe',
   authors: [{ name: 'Pogio' }],
   
-  // ✅ CODICE DI VERIFICA GOOGLE INSERITO QUI ✅
   verification: {
-    google: 'G-CW08FD0Y27',
+    google: '1d475449c33ee5b6',
   },
 
   openGraph: {
@@ -47,8 +46,26 @@ export default function RootLayout({
 }) {
   return (
     <html lang="it">
+      {/* ✅ SCRIPT GOOGLE ANALYTICS NEL <HEAD> ✅ */}
+      <head>
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-CW08FD0Y27"
+          strategy="beforeInteractive"
+        />
+        <Script
+          id="google-analytics-init"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-CW08FD0Y27');
+            `,
+          }}
+        />
+      </head>
       <body>
-        <GoogleAnalytics />
         <CookieBanner />
         {children}
       </body>
