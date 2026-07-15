@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   
   // ✅ CODICE DI VERIFICA GOOGLE INSERITO QUI ✅
   verification: {
-    google: '1d475449c33ee5b6',
+    google: 'G-CW08FD0Y27',
   },
 
   openGraph: {
