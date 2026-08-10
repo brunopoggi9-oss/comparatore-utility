@@ -62,36 +62,14 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 text-white py-16 px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full mb-6">
-            <Star className="h-4 w-4 text-yellow-400" />
-            <span className="text-sm font-medium">Oltre 10.000 utenti hanno già risparmiato</span>
-          </div>
-          
-          <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
-            Risparmia fino a <span className="text-yellow-400">300€</span> all'anno
-          </h1>
-          
-          <p className="text-xl md:text-2xl text-blue-100 mb-8 max-w-2xl mx-auto">
-            Confronta le migliori offerte di Luce, Gas e Telefonia in 30 secondi
-          </p>
-
-          <div className="flex flex-wrap justify-center gap-6 text-sm">
-            <div className="flex items-center gap-2">
-              <CheckCircle2 className="h-5 w-5 text-green-400" />
-              <span>100% Gratuito</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <CheckCircle2 className="h-5 w-5 text-green-400" />
-              <span>Senza impegno</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <CheckCircle2 className="h-5 w-5 text-green-400" />
-              <span>Confronto imparziale</span>
-            </div>
-          </div>
+           {/* Hero Section — banner POGIO */}
+      <section className="px-4 pt-6">
+        <div className="max-w-6xl mx-auto">
+          <img
+            src="/poggio-hero.png"
+            alt="POGIO — Confronta le migliori offerte di Luce, Gas e Telefonia. Confronto trasparente, offerte aggiornate, consulenza personalizzata, risparmio garantito."
+            className="w-full h-auto block rounded-2xl shadow-xl"
+          />
         </div>
       </section>
 
