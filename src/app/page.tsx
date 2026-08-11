@@ -7,7 +7,7 @@ import {
   User, Building2, Zap, Flame, Smartphone, 
   CheckCircle2, Phone, MessageCircle, 
   CreditCard, FileText, Landmark, ArrowRight,
-  ShieldCheck, TrendingDown, Clock, Star
+ShieldCheck, TrendingDown, Clock, Star, Facebook, Instagram
 } from 'lucide-react';
 
 export default function Home() {
