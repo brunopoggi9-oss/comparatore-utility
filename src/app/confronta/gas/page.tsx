@@ -29,21 +29,19 @@ export default function ConfrontaGasPage() {
     setTipoUtenza(params.get('tipo') || 'Privato');
     setMetodoPagamento(params.get('pagamento') || 'IBAN');
   }, []);
+
   const calcolaRisparmio = () => {
     const consumoNum = parseFloat(consumo);
     const spesaNum = parseFloat(spesa);
     if (!consumoNum || !spesaNum) { alert('Inserisci consumo e spesa attuale'); return; }
 
-    // FORMULA CORRETTA: confronta solo la parte variabile (materia gas)
-    // I costi fissi (trasporto, oneri, imposte) sono uguali per tutti e si elidono
-    // Il PCV (offerta.costo_fisso) è escluso perché leva della consulenza, non del ranking automatico
     const offerteConRisparmio = offerte.map((offerta) => {
       const metodiOfferta = offerta.metodi.map(m => m.toUpperCase().trim());
       const metodoUtente = metodoPagamento.toUpperCase().trim();
       const accettaMetodo = metodiOfferta.includes(metodoUtente);
       
-      const costiFissiStimati = spesaNum * 0.45; // trasporto + oneri + imposte (uguali per tutti)
-      const materiaGasNuova = consumoNum * offerta.prezzo; // solo la parte che cambia
+      const costiFissiStimati = spesaNum * 0.45;
+      const materiaGasNuova = consumoNum * offerta.prezzo;
       const nuovaBollettaTotale = costiFissiStimati + materiaGasNuova;
       const risparmio = spesaNum - nuovaBollettaTotale;
 
@@ -63,7 +61,7 @@ export default function ConfrontaGasPage() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 h-12 border-b-2 border-orange-500 mx-auto mb-4"></div>
           <p className="text-gray-600">Caricamento offerte in corso...</p>
         </div>
       </div>
@@ -75,10 +73,10 @@ export default function ConfrontaGasPage() {
       <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/" className="inline-flex items-center gap-2">
-            <div className="bg-orange-500 text-white p-2 rounded-lg"><Flame className="h-5 w-5" /></div>
+            <div className="bg-orange-500 text-white p-2 rounded-lg"><Flame className="h-5 h-5" /></div>
             <div><span className="text-xl font-bold text-gray-900">Pogio</span><p className="text-xs text-gray-500 -mt-1">Confronta e risparmia</p></div>
           </Link>
-          <div className="flex items-center gap-2 text-sm text-green-600"><ShieldCheck className="h-4 w-4" /><span className="hidden sm:inline">Dati al sicuro</span></div>
+          <div className="flex items-center gap-2 text-sm text-green-600"><ShieldCheck className="h-4 h-4" /><span className="hidden sm:inline">Dati al sicuro</span></div>
         </div>
       </header>
 
@@ -118,7 +116,7 @@ export default function ConfrontaGasPage() {
                 <div className="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded-r-lg flex items-start gap-3 mt-4">
                   <AlertCircle className="h-5 w-5 text-yellow-600 flex-shrink-0 mt-0.5" />
                   <p className="text-xs text-yellow-800">
-                    <strong>Nota sulla trasparenza:</strong> Il risparmio indicato è una stima sul totale della tua futura bolletta. Il calcolo confronta la tua spesa attuale con il costo della nuova offerta (Materia Gas + PCV), applicando una quota stimata di trasporti, oneri e imposte (circa il 45% della tua spesa attuale) che si applicano a tutte le offerte in modo simile.
+                    <strong>Nota sulla trasparenza:</strong> Il calcolo confronta solo la parte variabile della bolletta: la Materia Gas. I costi fissi (trasporto, oneri, imposte) sono uguali per tutti e si elidono nel confronto. Il PCV (quota commercializzazione) è escluso dal ranking automatico perché è leva della consulenza personalizzata.
                   </p>
                 </div>
               </div>
@@ -149,7 +147,7 @@ export default function ConfrontaGasPage() {
                   </div>
                   <div className="grid grid-cols-2 gap-4 py-4 border-y border-gray-200">
                     <div><p className="text-sm text-gray-500">Nuova bolletta stimata</p><p className="text-xl font-bold">{offerta.costoAnnuo.toFixed(0)}€</p></div>
-                    <div><p className="text-sm text-gray-500">Prezzo Smc + Fisso</p><p className="text-xl font-bold">{offerta.prezzo}€ + {offerta.costo_fisso}€</p></div>
+                    <div><p className="text-sm text-gray-500">Prezzo Materia Gas</p><p className="text-xl font-bold">{offerta.prezzo}€/Smc</p></div>
                   </div>
                   <div className="mt-4 space-y-2">
                     {offerta.vantaggi.map((feature: string, i: number) => (
