@@ -39,7 +39,9 @@ export default function ConfrontaLucePage() {
       return;
     }
 
-    // NUOVA FORMULA REALISTICA
+    // FORMULA CORRETTA: confronta solo la parte variabile (materia energia)
+    // I costi fissi (trasporto, oneri, imposte) sono uguali per tutti e si elidono
+    // Il PCV (offerta.costo_fisso) è escluso perché leva della consulenza, non del ranking automatico
     const offerteConRisparmio = offerte.map((offerta) => {
       const metodiOfferta = offerta.metodi.map(m => m.toUpperCase().trim());
       const metodoUtente = metodoPagamento.toUpperCase().trim();
@@ -48,11 +50,11 @@ export default function ConfrontaLucePage() {
       // 1. Stima i costi fissi (trasporti, oneri, imposte) della bolletta attuale (circa 45%)
       const costiFissiStimati = spesaNum * 0.45; 
       
-      // 2. Calcola il costo della Materia Energia + PCV della NUOVA offerta
-      const costoEnergiaNuova = (consumoNum * offerta.prezzo) + offerta.costo_fisso;
+      // 2. Calcola SOLO la Materia Energia della NUOVA offerta (senza PCV)
+      const materiaEnergiaNuova = consumoNum * offerta.prezzo;
       
-      // 3. Stima la nuova bolletta totale
-      const nuovaBollettaTotale = costiFissiStimati + costoEnergiaNuova;
+      // 3. Stima la nuova bolletta totale (costi fissi uguali + materia energia nuova)
+      const nuovaBollettaTotale = costiFissiStimati + materiaEnergiaNuova;
       
       // 4. Calcola il risparmio reale
       const risparmio = spesaNum - nuovaBollettaTotale;
@@ -71,7 +73,6 @@ export default function ConfrontaLucePage() {
     setRisultati(offerteConRisparmio);
     setStep(2);
   };
-
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
