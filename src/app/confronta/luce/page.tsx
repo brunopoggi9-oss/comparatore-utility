@@ -159,7 +159,8 @@ export default function ConfrontaLucePage() {
                   </div>
                   <div className="grid grid-cols-2 gap-4 py-4 border-y border-gray-200">
                     <div><p className="text-sm text-gray-500">Nuova bolletta stimata</p><p className="text-xl font-bold">{offerta.costoAnnuo.toFixed(0)}€</p></div>
-                    <div><p className="text-sm text-gray-500">Prezzo kWh + Fisso</p><p className="text-xl font-bold">{offerta.prezzo}€ + {offerta.costo_fisso}€</p></div>
+                    <div><p className="text-sm text-gray-500">Prezzo Materia Energia</p>
+<p className="text-xl font-bold">{offerta.prezzo}€/kWh</p></div>
                   </div>
                   <div className="mt-4 space-y-2">
                     {offerta.vantaggi.map((feature: string, i: number) => (
