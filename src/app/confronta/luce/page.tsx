@@ -134,7 +134,7 @@ export default function ConfrontaLucePage() {
                 <div className="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded-r-lg flex items-start gap-3 mt-4">
                   <AlertCircle className="h-5 w-5 text-yellow-600 flex-shrink-0 mt-0.5" />
                   <p className="text-xs text-yellow-800">
-                    <strong>Nota sulla trasparenza:</strong> Il risparmio indicato è una stima sul totale della tua futura bolletta. Il calcolo confronta la tua spesa attuale con il costo della nuova offerta (Materia Energia + PCV), applicando una quota stimata di trasporti, oneri e imposte (circa il 45% della tua spesa attuale) che si applicano a tutte le offerte in modo simile.
+                    <strong>Nota sulla trasparenza:</strong> Il risparmio indicato è una stima sul totale della tua futura bolletta. Il calcolo confronta solo la parte variabile della bolletta: la Materia Energia. I costi fissi (trasporto, oneri, imposte) sono uguali per tutti e si elidono nel confronto. Il PCV (quota commercializzazione) è escluso dal ranking automatico perché è leva della consulenza personalizzata.
                   </p>
                 </div>
               </div>
