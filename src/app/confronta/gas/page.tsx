@@ -29,21 +29,22 @@ export default function ConfrontaGasPage() {
     setTipoUtenza(params.get('tipo') || 'Privato');
     setMetodoPagamento(params.get('pagamento') || 'IBAN');
   }, []);
-
   const calcolaRisparmio = () => {
     const consumoNum = parseFloat(consumo);
     const spesaNum = parseFloat(spesa);
     if (!consumoNum || !spesaNum) { alert('Inserisci consumo e spesa attuale'); return; }
 
-    // FORMULA REALISTICA PER IL GAS (45% costi fissi)
+    // FORMULA CORRETTA: confronta solo la parte variabile (materia gas)
+    // I costi fissi (trasporto, oneri, imposte) sono uguali per tutti e si elidono
+    // Il PCV (offerta.costo_fisso) è escluso perché leva della consulenza, non del ranking automatico
     const offerteConRisparmio = offerte.map((offerta) => {
       const metodiOfferta = offerta.metodi.map(m => m.toUpperCase().trim());
       const metodoUtente = metodoPagamento.toUpperCase().trim();
       const accettaMetodo = metodiOfferta.includes(metodoUtente);
       
-      const costiFissiStimati = spesaNum * 0.45; 
-      const costoEnergiaNuova = (consumoNum * offerta.prezzo) + offerta.costo_fisso;
-      const nuovaBollettaTotale = costiFissiStimati + costoEnergiaNuova;
+      const costiFissiStimati = spesaNum * 0.45; // trasporto + oneri + imposte (uguali per tutti)
+      const materiaGasNuova = consumoNum * offerta.prezzo; // solo la parte che cambia
+      const nuovaBollettaTotale = costiFissiStimati + materiaGasNuova;
       const risparmio = spesaNum - nuovaBollettaTotale;
 
       return { ...offerta, costoAnnuo: nuovaBollettaTotale, risparmio, accettaMetodo };
@@ -56,6 +57,9 @@ export default function ConfrontaGasPage() {
 
     setRisultati(offerteConRisparmio);
     setStep(2);
+  };
+
+
   };
 
   if (loading) {
