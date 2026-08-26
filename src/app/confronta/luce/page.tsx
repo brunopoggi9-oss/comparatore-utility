@@ -2,77 +2,78 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Zap, TrendingDown, Check, ShieldCheck, AlertCircle } from 'lucide-react';
+import { Zap, TrendingDown, Check, ShieldCheck, AlertCircle, MessageCircle, Phone, ArrowLeft } from 'lucide-react';
 import { getOfferte, Offerta } from '@/lib/offerte';
+
+const PROFILI = [
+  { nome: 'Single', consumo: 1200, spesa: 380 },
+  { nome: 'Coppia', consumo: 2000, spesa: 540 },
+  { nome: 'Famiglia', consumo: 2700, spesa: 680 },
+];
 
 export default function ConfrontaLucePage() {
   const [step, setStep] = useState(1);
   const [consumo, setConsumo] = useState('');
   const [spesa, setSpesa] = useState('');
+  const [haBolletta, setHaBolletta] = useState<'si' | 'no'>('si');
+  const [metodoFiltro, setMetodoFiltro] = useState('TUTTI');
   const [risultati, setRisultati] = useState<any[]>([]);
   const [offerte, setOfferte] = useState<Offerta[]>([]);
   const [loading, setLoading] = useState(true);
-  
+  const [waLink, setWaLink] = useState('');
   const [tipoUtenza, setTipoUtenza] = useState('Privato');
-  const [metodoPagamento, setMetodoPagamento] = useState('IBAN');
 
   useEffect(() => {
-    getOfferte('luce').then((data) => {
-      setOfferte(data);
-      setLoading(false);
-    }).catch((error) => {
-      console.error('Errore caricamento luce:', error);
-      setLoading(false);
-    });
-    
+    getOfferte('luce').then((data) => { setOfferte(data); setLoading(false); })
+      .catch((e) => { console.error('Errore caricamento luce:', e); setLoading(false); });
+
     const params = new URLSearchParams(window.location.search);
     setTipoUtenza(params.get('tipo') || 'Privato');
-    setMetodoPagamento(params.get('pagamento') || 'IBAN');
+
+    // Recupera i dati salvati (tornando indietro non si perde nulla)
+    const c = localStorage.getItem('pogio_luce_consumo');
+    const s = localStorage.getItem('pogio_luce_spesa');
+    if (c) setConsumo(c);
+    if (s) setSpesa(s);
   }, []);
+
+  const scegliProfilo = (p: typeof PROFILI[0]) => {
+    setConsumo(String(p.consumo));
+    setSpesa(String(p.spesa));
+  };
 
   const calcolaRisparmio = () => {
     const consumoNum = parseFloat(consumo);
     const spesaNum = parseFloat(spesa);
+    if (!consumoNum || !spesaNum) { alert('Inserisci consumo e spesa attuale'); return; }
 
-    if (!consumoNum || !spesaNum) {
-      alert('Inserisci consumo e spesa attuale');
-      return;
-    }
+    // Salva per la prossima volta
+    localStorage.setItem('pogio_luce_consumo', consumo);
+    localStorage.setItem('pogio_luce_spesa', spesa);
 
-    // FORMULA CORRETTA: confronta solo la parte variabile (materia energia)
-    // I costi fissi (trasporto, oneri, imposte) sono uguali per tutti e si elidono
-    // Il PCV (offerta.costo_fisso) è escluso perché leva della consulenza, non del ranking automatico
-    const offerteConRisparmio = offerte.map((offerta) => {
-      const metodiOfferta = offerta.metodi.map(m => m.toUpperCase().trim());
-      const metodoUtente = metodoPagamento.toUpperCase().trim();
-      const accettaMetodo = metodiOfferta.includes(metodoUtente);
-      
-      // 1. Stima i costi fissi (trasporti, oneri, imposte) della bolletta attuale (circa 45%)
-      const costiFissiStimati = spesaNum * 0.45; 
-      
-      // 2. Calcola SOLO la Materia Energia della NUOVA offerta (senza PCV)
+    const lista = metodoFiltro === 'TUTTI'
+      ? offerte
+      : offerte.filter((o) => o.metodi.map((m) => m.toUpperCase().trim()).includes(metodoFiltro));
+
+    const offerteConRisparmio = lista.map((offerta) => {
+      const costiFissiStimati = spesaNum * 0.45;
       const materiaEnergiaNuova = consumoNum * offerta.prezzo;
-      
-      // 3. Stima la nuova bolletta totale (costi fissi uguali + materia energia nuova)
       const nuovaBollettaTotale = costiFissiStimati + materiaEnergiaNuova;
-      
-      // 4. Calcola il risparmio reale
       const risparmio = spesaNum - nuovaBollettaTotale;
-
-      return { ...offerta, costoAnnuo: nuovaBollettaTotale, risparmio, accettaMetodo };
+      return { ...offerta, costoAnnuo: nuovaBollettaTotale, risparmio };
     });
 
-    // Ordina: prima quelle compatibili (per risparmio decrescente), poi le altre
-    offerteConRisparmio.sort((a, b) => {
-      if (a.accettaMetodo === b.accettaMetodo) {
-        return b.risparmio - a.risparmio;
-      }
-      return a.accettaMetodo ? -1 : 1;
-    });
-
+    offerteConRisparmio.sort((a, b) => b.risparmio - a.risparmio);
     setRisultati(offerteConRisparmio);
+
+    // Riepilogo pronto da inviare su WhatsApp
+    const best = offerteConRisparmio[0];
+    const msg = `Ciao Bruno, ho confrontato le offerte Luce su pogio.it.%0AConsumo: ${consumoNum} kWh · Spesa attuale: ${spesaNum}€.%0AMigliore: ${best ? best.nome + ' (' + best.gestore + ')' : '-'} · Risparmio stimato ${best ? best.risparmio.toFixed(0) : '-'}€.%0AVorrei una consulenza.`;
+    setWaLink(`https://wa.me/393791394162?text=${msg}`);
+
     setStep(2);
   };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -92,7 +93,7 @@ export default function ConfrontaLucePage() {
             <div className="bg-blue-600 text-white p-2 rounded-lg"><Zap className="h-5 w-5" /></div>
             <div><span className="text-xl font-bold text-gray-900">Pogio</span><p className="text-xs text-gray-500 -mt-1">Confronta e risparmia</p></div>
           </Link>
-          <div className="flex items-center gap-2 text-sm text-green-600"><ShieldCheck className="h-4 w-4" /><span className="hidden sm:inline">Dati al sicuro</span></div>
+          <Link href="/" className="inline-flex items-center text-blue-600 hover:text-blue-800 text-sm"><ArrowLeft className="h-4 w-4 mr-1" /> Home</Link>
         </div>
       </header>
 
@@ -100,15 +101,41 @@ export default function ConfrontaLucePage() {
         <div className="max-w-4xl mx-auto px-4 text-center">
           <Zap className="h-16 w-16 mx-auto mb-4" />
           <h1 className="text-4xl font-bold mb-2">Confronta le offerte Luce</h1>
-          <p className="text-lg text-blue-100">Inserisci i tuoi consumi e scopri quanto puoi risparmiare</p>
+          <p className="text-lg text-blue-100">Due passaggi: i tuoi consumi, poi il risultato.</p>
         </div>
       </section>
 
       <section className="py-12">
         <div className="max-w-4xl mx-auto px-4">
+
           {step === 1 && (
             <div className="bg-white rounded-xl shadow-sm p-8">
-              <h2 className="text-2xl font-bold mb-6">Inserisci i tuoi dati</h2>
+              <h2 className="text-2xl font-bold mb-6">I tuoi consumi</h2>
+
+              <div className="flex flex-col sm:flex-row gap-2 mb-6">
+                <button onClick={() => setHaBolletta('si')}
+                  className={`px-5 py-3 rounded-lg text-sm font-semibold transition-colors ${haBolletta === 'si' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>
+                  Ho la bolletta con me
+                </button>
+                <button onClick={() => setHaBolletta('no')}
+                  className={`px-5 py-3 rounded-lg text-sm font-semibold transition-colors ${haBolletta === 'no' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>
+                  Non ho la bolletta con me
+                </button>
+              </div>
+
+              {haBolletta === 'no' && (
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                  <p className="text-sm text-blue-800 mb-3">Nessun problema: scegli un profilo, poi potrai correggere i valori.</p>
+                  <div className="grid grid-cols-3 gap-2">
+                    {PROFILI.map((p) => (
+                      <button key={p.nome} onClick={() => scegliProfilo(p)} className="bg-white border border-blue-200 rounded-lg py-2 text-sm font-medium text-blue-700 hover:bg-blue-100">
+                        {p.nome}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               <div className="space-y-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Consumo annuo (kWh)</label>
@@ -118,9 +145,22 @@ export default function ConfrontaLucePage() {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Spesa annua attuale (€)</label>
                   <input type="number" value={spesa} onChange={(e) => setSpesa(e.target.value)} placeholder="Es. 650" className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
-                  <p className="text-sm text-gray-500 mt-1">Totale di tutte le bollette dell'ultimo anno (IVA e tasse incluse)</p>
+                  <p className="text-sm text-gray-500 mt-1">Totale di tutte le bollette dell'ultimo anno</p>
                 </div>
-                <button onClick={calcolaRisparmio} className="w-full bg-blue-600 text-white py-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors">Confronta le offerte</button>
+
+                <div>
+                  <p className="text-sm font-medium text-gray-700 mb-2">Metodo di pagamento (facoltativo)</p>
+                  <div className="flex flex-wrap gap-2">
+                    {['TUTTI', 'IBAN', 'BOLLETTINO', 'CARTA'].map((m) => (
+                      <button key={m} onClick={() => setMetodoFiltro(m)}
+                        className={`px-4 py-2 rounded-full text-xs font-semibold transition-colors ${metodoFiltro === m ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>
+                        {m === 'TUTTI' ? 'Tutti' : m === 'IBAN' ? 'Addebito diretto' : m === 'BOLLETTINO' ? 'Bollettino' : 'Carta'}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <button onClick={calcolaRisparmio} className="w-full bg-blue-600 text-white py-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors">Vedi il risultato</button>
               </div>
             </div>
           )}
@@ -129,24 +169,40 @@ export default function ConfrontaLucePage() {
             <div className="space-y-6">
               <div className="mb-6">
                 <h2 className="text-2xl font-bold mb-2">Le migliori offerte per te</h2>
-                
-                {/* DISCLAIMER ONESTO E TRASPARENTE */}
                 <div className="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded-r-lg flex items-start gap-3 mt-4">
                   <AlertCircle className="h-5 w-5 text-yellow-600 flex-shrink-0 mt-0.5" />
                   <p className="text-xs text-yellow-800">
-                    <strong>Nota sulla trasparenza:</strong> Il risparmio indicato è una stima sul totale della tua futura bolletta. Il calcolo confronta solo la parte variabile della bolletta: la Materia Energia. I costi fissi (trasporto, oneri, imposte) sono uguali per tutti e si elidono nel confronto. Il PCV (quota commercializzazione) è escluso dal ranking automatico perché è leva della consulenza personalizzata.
+                    <strong>Nota sulla trasparenza:</strong> confrontiamo solo la parte variabile (Materia Energia). I costi fissi sono uguali per tutti e si elidono; il PCV è escluso perché è leva della consulenza personalizzata.
                   </p>
                 </div>
               </div>
 
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                 <h2 className="text-xl font-bold">Risultati ({risultati.length})</h2>
-                <button onClick={() => setStep(1)} className="text-blue-600 hover:text-blue-800 font-medium">Modifica dati</button>
+                <div className="flex gap-2">
+                  <button onClick={() => setStep(1)} className="text-blue-600 hover:text-blue-800 font-medium text-sm">Modifica dati</button>
+                </div>
               </div>
 
+              {/* Contatti DOPO il risultato */}
+              <div className="flex flex-col sm:flex-row gap-3">
+                <a href={waLink} target="_blank" rel="noopener noreferrer" className="flex-1 inline-flex items-center justify-center gap-2 bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700">
+                  <MessageCircle className="h-5 w-5" /> Invia il risultato su WhatsApp
+                </a>
+                <Link href="/consulenza" className="flex-1 inline-flex items-center justify-center gap-2 bg-white border-2 border-blue-600 text-blue-600 py-3 rounded-lg font-semibold hover:bg-blue-50">
+                  <Phone className="h-5 w-5" /> Richiedi consulenza
+                </Link>
+              </div>
+
+              {risultati.length === 0 && (
+                <div className="bg-yellow-50 border-l-4 border-yellow-500 p-6 rounded-r-lg">
+                  <p className="text-yellow-800 font-medium">Nessuna offerta trovata per questo filtro.</p>
+                </div>
+              )}
+
               {risultati.map((offerta, index) => (
-                <div key={offerta.id} className={`bg-white rounded-xl shadow-sm p-6 ${index === 0 && offerta.accettaMetodo ? 'ring-2 ring-green-500' : ''} ${!offerta.accettaMetodo ? 'opacity-75' : ''}`}>
-                  {index === 0 && offerta.accettaMetodo && <div className="inline-block bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full mb-4">Miglior offerta</div>}
+                <div key={offerta.id} className={`bg-white rounded-xl shadow-sm p-6 ${index === 0 ? 'ring-2 ring-green-500' : ''}`}>
+                  {index === 0 && <div className="inline-block bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full mb-4">Miglior offerta</div>}
                   <div className="flex items-start justify-between mb-4">
                     <div><h3 className="text-xl font-bold">{offerta.nome}</h3><p className="text-gray-600">{offerta.gestore}</p></div>
                     <div className="text-right">
@@ -159,41 +215,15 @@ export default function ConfrontaLucePage() {
                   </div>
                   <div className="grid grid-cols-2 gap-4 py-4 border-y border-gray-200">
                     <div><p className="text-sm text-gray-500">Nuova bolletta stimata</p><p className="text-xl font-bold">{offerta.costoAnnuo.toFixed(0)}€</p></div>
-                    <div><p className="text-sm text-gray-500">Prezzo Materia Energia</p>
-<p className="text-xl font-bold">{offerta.prezzo}€/kWh</p></div>
+                    <div><p className="text-sm text-gray-500">Prezzo Materia Energia</p><p className="text-xl font-bold">{offerta.prezzo}€/kWh</p></div>
                   </div>
                   <div className="mt-4 space-y-2">
                     {offerta.vantaggi.map((feature: string, i: number) => (
                       <div key={i} className="flex items-center gap-2"><Check className="h-4 w-4 text-green-600 flex-shrink-0" /><span className="text-sm text-gray-700">{feature}</span></div>
                     ))}
                   </div>
-                  <div className="mt-4 pt-4 border-t border-gray-200">
-                    <p className="text-xs text-gray-500 mb-2 font-medium">Metodi di pagamento accettati:</p>
-                    <div className="flex flex-wrap gap-2">
-                      {offerta.metodi.map((metodo: string, i: number) => (
-                        <span key={i} className={`text-xs px-2 py-1 rounded-full ${metodo === metodoPagamento ? 'bg-green-100 text-green-800 font-semibold' : 'bg-gray-100 text-gray-600'}`}>
-                          {metodo === 'IBAN' ? 'Addebito diretto' : metodo === 'BOLLETTINO' ? 'Bollettino' : 'Carta prepagata'}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                  
-                  {!offerta.accettaMetodo && (
-                    <div className="mt-4 bg-red-50 text-red-700 text-xs font-bold px-3 py-2 rounded-lg border border-red-200">
-                      ⚠️ Questa offerta non accetta {metodoPagamento}
-                    </div>
-                  )}
-                  
-                  <Link 
-                    href={offerta.accettaMetodo ? `/attivazione?offerta=${encodeURIComponent(offerta.nome + ' - ' + offerta.gestore)}` : '#'}
-                    className={`block w-full mt-4 py-3 rounded-lg font-semibold text-center transition-colors ${
-                      offerta.accettaMetodo 
-                        ? 'bg-blue-600 text-white hover:bg-blue-700' 
-                        : 'bg-gray-200 text-gray-500 cursor-not-allowed'
-                    }`}
-                    onClick={(e) => !offerta.accettaMetodo && e.preventDefault()}
-                  >
-                    {offerta.accettaMetodo ? 'Attiva questa offerta' : 'Metodo non compatibile'}
+                  <Link href={`/attivazione?offerta=${encodeURIComponent(offerta.nome + ' - ' + offerta.gestore)}`} className="block w-full mt-4 py-3 rounded-lg font-semibold text-center bg-blue-600 text-white hover:bg-blue-700 transition-colors">
+                    Attiva questa offerta
                   </Link>
                 </div>
               ))}
