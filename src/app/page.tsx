@@ -164,7 +164,7 @@ export default function Home() {
             </div>
 
             <div className="mt-6 flex flex-col sm:flex-row justify-center gap-3 text-sm">
-              <a href="https://wa.me/39TUONUMERO" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 text-green-700 bg-green-50 border border-green-200 px-4 py-2 rounded-lg font-medium hover:bg-green-100">
+              <a href="https://wa.me/393791394162" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 text-green-700 bg-green-50 border border-green-200 px-4 py-2 rounded-lg font-medium hover:bg-green-100">
                 <MessageCircle className="h-4 w-4" /> Non sai da dove iniziare? Scrivi a Bruno
               </a>
               <Link href="/consulenza" className="inline-flex items-center justify-center gap-2 text-blue-700 bg-blue-50 border border-blue-200 px-4 py-2 rounded-lg font-medium hover:bg-blue-100">
@@ -215,7 +215,7 @@ export default function Home() {
                className="bg-white/10 hover:bg-pink-600 p-2.5 rounded-full transition-colors">
               <Instagram className="h-5 w-5" />
             </a>
-            <a href="https://tiktok.com/@TUOPROFILO" target="_blank" rel="noopener noreferrer" aria-label="TikTok"
+            <a href="https://tiktok.com/@pogio.it" target="_blank" rel="noopener noreferrer" aria-label="TikTok"
                className="bg-white/10 hover:bg-black p-2.5 rounded-full transition-colors">
               <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                 <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
