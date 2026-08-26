@@ -64,11 +64,15 @@ export default function ConfrontaLucePage() {
     });
 
     offerteConRisparmio.sort((a, b) => b.risparmio - a.risparmio);
-    setRisultati(offerteConRisparmio);
+    // Mostra solo le offerte davvero convenienti (risparmio positivo)
+    const vantaggiose = offerteConRisparmio.filter((o) => o.risparmio > 0);
+    setRisultati(vantaggiose);
 
     // Riepilogo pronto da inviare su WhatsApp
-    const best = offerteConRisparmio[0];
-    const msg = `Ciao Bruno, ho confrontato le offerte Luce su pogio.it.%0AConsumo: ${consumoNum} kWh · Spesa attuale: ${spesaNum}€.%0AMigliore: ${best ? best.nome + ' (' + best.gestore + ')' : '-'} · Risparmio stimato ${best ? best.risparmio.toFixed(0) : '-'}€.%0AVorrei una consulenza.`;
+    const best = vantaggiose[0];
+    const msg = best
+      ? `Ciao Bruno, ho confrontato le offerte Luce su pogio.it.%0AConsumo: ${consumoNum} kWh · Spesa attuale: ${spesaNum}€.%0AMigliore: ${best.nome} (${best.gestore}) · Risparmio stimato ${best.risparmio.toFixed(0)}€.%0AVorrei una consulenza.`
+      : `Ciao Bruno, ho confrontato le offerte Luce su pogio.it.%0AConsumo: ${consumoNum} kWh · Spesa attuale: ${spesaNum}€.%0ANon risultano offerte vantaggiose: vorrei una consulenza.`;
     setWaLink(`https://wa.me/393791394162?text=${msg}`);
 
     setStep(2);
@@ -196,7 +200,8 @@ export default function ConfrontaLucePage() {
 
               {risultati.length === 0 && (
                 <div className="bg-yellow-50 border-l-4 border-yellow-500 p-6 rounded-r-lg">
-                  <p className="text-yellow-800 font-medium">Nessuna offerta trovata per questo filtro.</p>
+                  <p className="text-yellow-800 font-medium">Con i tuoi dati, al momento non ci sono offerte che ti farebbero risparmiare.</p>
+                  <p className="text-yellow-800 text-sm mt-1">Un consulente può verificare più a fondo: usa i pulsanti qui sopra per WhatsApp o per farti richiamare.</p>
                 </div>
               )}
 
