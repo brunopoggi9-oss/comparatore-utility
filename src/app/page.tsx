@@ -3,11 +3,10 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { 
-  User, Building2, Zap, Flame, Smartphone, 
-  CheckCircle2, Phone, MessageCircle, 
-  CreditCard, FileText, Landmark, ArrowRight,
-ShieldCheck, TrendingDown, Clock, Star, Facebook, Instagram
+import {
+  Zap, Flame, Smartphone,
+  CheckCircle2, Phone, MessageCircle,
+  ShieldCheck, TrendingDown, Clock, Star, Facebook, Instagram
 } from 'lucide-react';
 
 export default function Home() {
@@ -21,15 +20,14 @@ export default function Home() {
     }
     router.push(`/confronta/${set}?tipo=${tipoUtenza}`);
   };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
       {/* Header */}
       <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="bg-blue-600 text-white p-2 rounded-lg">
-              <Zap className="h-5 w-5" />
-            </div>
+            <div className="bg-blue-600 text-white p-2 rounded-lg"><Zap className="h-5 w-5" /></div>
             <div>
               <span className="text-xl font-bold text-gray-900">Pogio</span>
               <p className="text-xs text-gray-500 -mt-1">Confronta e risparmia</p>
@@ -46,11 +44,8 @@ export default function Home() {
       <section className="relative overflow-hidden bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100 py-16 md:py-20 px-4">
         <div className="absolute -top-24 -left-24 h-80 w-80 rounded-full bg-blue-200/50 blur-3xl" aria-hidden="true"></div>
         <div className="absolute -bottom-24 -right-24 h-80 w-80 rounded-full bg-lime-200/50 blur-3xl" aria-hidden="true"></div>
-
         <div className="max-w-6xl mx-auto relative">
           <div className="grid md:grid-cols-2 gap-12 lg:gap-16 items-center">
-
-            {/* Colonna sinistra */}
             <div>
               <span className="inline-flex items-center gap-2 bg-white border border-blue-100 text-blue-700 text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-full shadow-sm mb-6">
                 <Star className="h-4 w-4 text-yellow-400" />
@@ -62,7 +57,6 @@ export default function Home() {
               <p className="text-lg md:text-xl text-slate-600 mb-8 leading-relaxed max-w-lg">
                 Analizziamo costi, condizioni e durata dell'offerta prima di farti cambiare gestore.
               </p>
-
               <div className="flex flex-col sm:flex-row gap-4 mb-8">
                 <a href="#smart-gate" className="inline-flex items-center justify-center gap-2 bg-blue-600 text-white px-7 py-4 rounded-xl font-semibold hover:bg-blue-700 hover:-translate-y-0.5 transition-all shadow-lg shadow-blue-600/25">
                   <Zap className="h-5 w-5" />
@@ -73,7 +67,6 @@ export default function Home() {
                   Parla con Bruno su WhatsApp
                 </a>
               </div>
-
               <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm font-medium text-slate-600">
                 <span className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-green-600" />100% gratuito</span>
                 <span className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-green-600" />Senza impegno</span>
@@ -81,7 +74,6 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Colonna destra: volto */}
             <div className="relative flex justify-center">
               <div className="relative">
                 <div className="absolute -top-5 -left-5 h-full w-full rounded-full bg-lime-500" aria-hidden="true"></div>
@@ -90,10 +82,8 @@ export default function Home() {
                 <span className="absolute bottom-3 right-0 bg-green-600 text-white text-xs font-bold px-4 py-1.5 rounded-full shadow-lg">Disponibile ora</span>
               </div>
             </div>
-
           </div>
 
-          {/* Card citazione */}
           <div className="mt-14 bg-white rounded-2xl shadow-xl border border-slate-200 p-6 md:p-8 max-w-3xl mx-auto text-center relative">
             <span className="absolute -top-5 left-1/2 -translate-x-1/2 bg-lime-500 text-slate-900 text-3xl font-extrabold w-10 h-10 rounded-full flex items-center justify-center shadow-lg">"</span>
             <p className="text-lg md:text-xl text-slate-700 italic leading-relaxed">
@@ -104,7 +94,7 @@ export default function Home() {
         </div>
       </section>
 
-          {/* Striscia fiducia */}
+      {/* Striscia fiducia */}
       <section className="bg-slate-900 py-8 px-4">
         <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
           <div>
@@ -130,11 +120,10 @@ export default function Home() {
         </div>
       </section>
 
-          {/* SMART GATE — 1 passo: scegli il servizio */}
+      {/* SMART GATE — 1 passo: scegli il servizio */}
       <section id="smart-gate" className="py-12 px-4 -mt-8">
         <div className="max-w-3xl mx-auto">
           <div className="bg-white rounded-2xl shadow-xl p-8 mb-8">
-
             <div className="flex justify-center gap-2 mb-6">
               <button onClick={() => setTipoUtenza('privato')}
                 className={`px-5 py-2 rounded-full text-sm font-semibold transition-colors ${tipoUtenza === 'privato' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>
@@ -172,6 +161,7 @@ export default function Home() {
               </Link>
             </div>
           </div>
+
           <div className="grid md:grid-cols-3 gap-6">
             <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
               <div className="bg-blue-100 w-12 h-12 rounded-lg flex items-center justify-center mb-4"><ShieldCheck className="h-6 w-6 text-blue-600" /></div>
@@ -189,41 +179,28 @@ export default function Home() {
               <p className="text-sm text-gray-600">Ti bastano consumo e spesa annua: al resto pensiamo noi.</p>
             </div>
           </div>
+        </div>
       </section>
 
-           <footer className="bg-gray-900 text-white py-8 mt-12">
+      <footer className="bg-gray-900 text-white py-8 mt-12">
         <div className="max-w-6xl mx-auto px-4 text-center">
           <div className="flex items-center justify-center gap-2 mb-4">
-            <div className="bg-blue-600 text-white p-2 rounded-lg">
-              <Zap className="h-5 w-5" />
-            </div>
+            <div className="bg-blue-600 text-white p-2 rounded-lg"><Zap className="h-5 w-5" /></div>
             <div className="text-left">
               <span className="text-xl font-bold">Pogio</span>
               <p className="text-xs text-gray-400 -mt-1">Confronta e risparmia</p>
             </div>
           </div>
-
-          {/* Social cliccabili */}
           <div className="flex items-center justify-center gap-3 mb-5">
-            <a href="https://facebook.com/profile.php?id=61593343671767" target="_blank" rel="noopener noreferrer" aria-label="Facebook"
-               className="bg-white/10 hover:bg-blue-600 p-2.5 rounded-full transition-colors">
-              <Facebook className="h-5 w-5" />
-            </a>
-            <a href="https://instagram.com/pogio.it" target="_blank" rel="noopener noreferrer" aria-label="Instagram"
-               className="bg-white/10 hover:bg-pink-600 p-2.5 rounded-full transition-colors">
-              <Instagram className="h-5 w-5" />
-            </a>
-            <a href="https://tiktok.com/@pogio.it" target="_blank" rel="noopener noreferrer" aria-label="TikTok"
-               className="bg-white/10 hover:bg-black p-2.5 rounded-full transition-colors">
+            <a href="https://facebook.com/profile.php?id=61593343671767" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="bg-white/10 hover:bg-blue-600 p-2.5 rounded-full transition-colors"><Facebook className="h-5 w-5" /></a>
+            <a href="https://instagram.com/pogio.it" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="bg-white/10 hover:bg-pink-600 p-2.5 rounded-full transition-colors"><Instagram className="h-5 w-5" /></a>
+            <a href="https://tiktok.com/@pogio.it" target="_blank" rel="noopener noreferrer" aria-label="TikTok" className="bg-white/10 hover:bg-black p-2.5 rounded-full transition-colors">
               <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                 <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
               </svg>
             </a>
           </div>
-
-          <p className="text-gray-400 text-sm">
-            © 2026 Pogio. Tutti i diritti riservati.
-          </p>
+          <p className="text-gray-400 text-sm">© 2026 Pogio. Tutti i diritti riservati.</p>
           <div className="mt-3 text-sm text-gray-500">
             <a href="mailto:info@pogio.it" className="hover:text-blue-400">info@pogio.it</a>
           </div>
