@@ -62,65 +62,93 @@ export default function Home() {
         </div>
       </header>
 
-{/* Hero Section — testo reale + volto */}
-<section className="bg-gradient-to-br from-slate-50 to-blue-50 py-16 px-4">
-  <div className="max-w-6xl mx-auto">
-    <div className="grid md:grid-cols-2 gap-12 items-center">
-      
-      {/* Colonna sinistra: titolo + CTA */}
-      <div>
-        <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">
-          Confronta luce, gas e telefonia con un <span className="text-blue-600">consulente</span>
-        </h1>
-        <p className="text-xl text-gray-700 mb-8 leading-relaxed">
-          Analizziamo costi, condizioni e durata dell'offerta prima di farti cambiare gestore.
-        </p>
-        
-        <div className="flex flex-col sm:flex-row gap-4">
-          <a 
-            href="#smart-gate" 
-            className="inline-flex items-center justify-center gap-2 bg-blue-600 text-white px-8 py-4 rounded-xl font-semibold hover:bg-blue-700 transition-colors shadow-lg"
-          >
-            <Zap className="h-5 w-5" />
-            Analizza gratuitamente la mia bolletta
-          </a>
-          <a 
-            href="https://wa.me/393791394162?text=Ciao%20Bruno,%20vorrei%20capire%20se%20cambiare%20gestore%20conviene" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-2 bg-green-600 text-white px-8 py-4 rounded-xl font-semibold hover:bg-green-700 transition-colors shadow-lg"
-          >
-            <MessageCircle className="h-5 w-5" />
-            Parla con Bruno su WhatsApp
-          </a>
-        </div>
-      </div>
+      {/* Hero Section — testo reale + volto */}
+      <section className="relative overflow-hidden bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100 py-16 md:py-20 px-4">
+        <div className="absolute -top-24 -left-24 h-80 w-80 rounded-full bg-blue-200/50 blur-3xl" aria-hidden="true"></div>
+        <div className="absolute -bottom-24 -right-24 h-80 w-80 rounded-full bg-lime-200/50 blur-3xl" aria-hidden="true"></div>
 
-      {/* Colonna destra: volto + frase personale */}
-      <div className="flex flex-col items-center text-center">
-        <div className="relative mb-6">
-          <img 
-            src="/bruno.jpg" 
-            alt="Bruno Poggi, consulente energia e telefonia" 
-            className="w-48 h-48 md:w-64 md:h-64 rounded-full object-cover shadow-2xl border-4 border-white"
-          />
-          <div className="absolute -bottom-2 -right-2 bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
-            Disponibile ora
+        <div className="max-w-6xl mx-auto relative">
+          <div className="grid md:grid-cols-2 gap-12 lg:gap-16 items-center">
+
+            {/* Colonna sinistra */}
+            <div>
+              <span className="inline-flex items-center gap-2 bg-white border border-blue-100 text-blue-700 text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-full shadow-sm mb-6">
+                <Star className="h-4 w-4 text-yellow-400" />
+                Consulente indipendente · Luce · Gas · Telefonia
+              </span>
+              <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 mb-6 leading-[1.08] tracking-tight">
+                Confronta luce, gas e telefonia <span className="text-blue-600">con un consulente</span>
+              </h1>
+              <p className="text-lg md:text-xl text-slate-600 mb-8 leading-relaxed max-w-lg">
+                Analizziamo costi, condizioni e durata dell'offerta prima di farti cambiare gestore.
+              </p>
+
+              <div className="flex flex-col sm:flex-row gap-4 mb-8">
+                <a href="#smart-gate" className="inline-flex items-center justify-center gap-2 bg-blue-600 text-white px-7 py-4 rounded-xl font-semibold hover:bg-blue-700 hover:-translate-y-0.5 transition-all shadow-lg shadow-blue-600/25">
+                  <Zap className="h-5 w-5" />
+                  Analizza gratuitamente la mia bolletta
+                </a>
+                <a href="https://wa.me/393791394162?text=Ciao%20Bruno,%20vorrei%20capire%20se%20cambiare%20gestore%20conviene" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 bg-green-600 text-white px-7 py-4 rounded-xl font-semibold hover:bg-green-700 hover:-translate-y-0.5 transition-all shadow-lg shadow-green-600/25">
+                  <MessageCircle className="h-5 w-5" />
+                  Parla con Bruno su WhatsApp
+                </a>
+              </div>
+
+              <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm font-medium text-slate-600">
+                <span className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-green-600" />100% gratuito</span>
+                <span className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-green-600" />Senza impegno</span>
+                <span className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-green-600" />Confronto imparziale</span>
+              </div>
+            </div>
+
+            {/* Colonna destra: volto */}
+            <div className="relative flex justify-center">
+              <div className="relative">
+                <div className="absolute -top-5 -left-5 h-full w-full rounded-full bg-lime-500" aria-hidden="true"></div>
+                <div className="absolute -bottom-10 -right-10 h-36 w-36 rounded-full border-[14px] border-blue-600/10" aria-hidden="true"></div>
+                <img src="/bruno.png" alt="Bruno Poggi, consulente energia e telefonia" className="relative w-64 h-64 md:w-80 md:h-80 rounded-full object-cover object-top border-8 border-white shadow-2xl" />
+                <span className="absolute bottom-3 right-0 bg-green-600 text-white text-xs font-bold px-4 py-1.5 rounded-full shadow-lg">Disponibile ora</span>
+              </div>
+            </div>
+
+          </div>
+
+          {/* Card citazione */}
+          <div className="mt-14 bg-white rounded-2xl shadow-xl border border-slate-200 p-6 md:p-8 max-w-3xl mx-auto text-center relative">
+            <span className="absolute -top-5 left-1/2 -translate-x-1/2 bg-lime-500 text-slate-900 text-3xl font-extrabold w-10 h-10 rounded-full flex items-center justify-center shadow-lg">"</span>
+            <p className="text-lg md:text-xl text-slate-700 italic leading-relaxed">
+              Sono Bruno Poggi. Ti aiuto a capire se cambiare gestore conviene davvero, senza fermarmi al solo prezzo pubblicizzato.
+            </p>
+            <p className="mt-4 text-xs font-bold text-slate-500 uppercase tracking-widest">Bruno Poggi · Consulente energia e telefonia</p>
           </div>
         </div>
-        <div className="bg-white rounded-xl shadow-sm p-6 max-w-md">
-          <p className="text-gray-700 text-lg italic leading-relaxed mb-3">
-            "Sono Bruno Poggi. Ti aiuto a capire se cambiare gestore conviene davvero, senza fermarmi al solo prezzo pubblicizzato."
-          </p>
-          <p className="text-sm text-gray-500 font-medium">
-            Consulente indipendente · Pogio.it
-          </p>
-        </div>
-      </div>
+      </section>
 
-    </div>
-  </div>
-</section>
+      {/* Striscia fiducia (come nel banner) */}
+      <section className="bg-slate-900 py-8 px-4">
+        <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+          <div>
+            <div className="bg-lime-500/15 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3"><ShieldCheck className="h-6 w-6 text-lime-400" /></div>
+            <h3 className="text-white font-bold text-sm mb-1">Confronto trasparente</h3>
+            <p className="text-slate-400 text-xs">Solo offerte verificate.</p>
+          </div>
+          <div>
+            <div className="bg-blue-500/15 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3"><Clock className="h-6 w-6 text-blue-400" /></div>
+            <h3 className="text-white font-bold text-sm mb-1">Offerte aggiornate</h3>
+            <p className="text-slate-400 text-xs">Ogni giorno le migliori opportunità.</p>
+          </div>
+          <div>
+            <div className="bg-purple-500/15 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3"><Phone className="h-6 w-6 text-purple-400" /></div>
+            <h3 className="text-white font-bold text-sm mb-1">Consulenza personalizzata</h3>
+            <p className="text-slate-400 text-xs">Al tuo fianco in ogni scelta.</p>
+          </div>
+          <div>
+            <div className="bg-lime-500/15 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3"><TrendingDown className="h-6 w-6 text-lime-400" /></div>
+            <h3 className="text-white font-bold text-sm mb-1">Risparmio garantito</h3>
+            <p className="text-slate-400 text-xs">Più confronti, più risparmi.</p>
+          </div>
+        </div>
+      </section>
 
      {/* SMART GATE */}
 <section id="smart-gate" className="py-12 px-4 -mt-8">
