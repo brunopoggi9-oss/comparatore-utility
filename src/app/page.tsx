@@ -104,18 +104,18 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Striscia fiducia (come nel banner) */}
+          {/* Striscia fiducia */}
       <section className="bg-slate-900 py-8 px-4">
         <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
           <div>
             <div className="bg-lime-500/15 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3"><ShieldCheck className="h-6 w-6 text-lime-400" /></div>
             <h3 className="text-white font-bold text-sm mb-1">Confronto trasparente</h3>
-            <p className="text-slate-400 text-xs">Solo offerte verificate.</p>
+            <p className="text-slate-400 text-xs">Analizziamo costi e condizioni, non solo il prezzo.</p>
           </div>
           <div>
             <div className="bg-blue-500/15 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3"><Clock className="h-6 w-6 text-blue-400" /></div>
-            <h3 className="text-white font-bold text-sm mb-1">Offerte aggiornate</h3>
-            <p className="text-slate-400 text-xs">Ogni giorno le migliori opportunità.</p>
+            <h3 className="text-white font-bold text-sm mb-1">Offerte dei partner</h3>
+            <p className="text-slate-400 text-xs">Confrontiamo le condizioni che possiamo verificare.</p>
           </div>
           <div>
             <div className="bg-purple-500/15 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3"><Phone className="h-6 w-6 text-purple-400" /></div>
@@ -124,8 +124,8 @@ export default function Home() {
           </div>
           <div>
             <div className="bg-lime-500/15 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3"><TrendingDown className="h-6 w-6 text-lime-400" /></div>
-            <h3 className="text-white font-bold text-sm mb-1">Risparmio garantito</h3>
-            <p className="text-slate-400 text-xs">Più confronti, più risparmi.</p>
+            <h3 className="text-white font-bold text-sm mb-1">Verifichiamo il risparmio</h3>
+            <p className="text-slate-400 text-xs">Ti diciamo onestamente se conviene cambiare.</p>
           </div>
         </div>
       </section>
