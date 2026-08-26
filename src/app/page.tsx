@@ -62,19 +62,68 @@ export default function Home() {
         </div>
       </header>
 
-           {/* Hero Section — banner POGIO */}
-      <section className="px-4 pt-6">
-        <div className="max-w-6xl mx-auto">
-          <img
-            src="/poggio-hero.png"
-            alt="POGIO — Confronta le migliori offerte di Luce, Gas e Telefonia. Confronto trasparente, offerte aggiornate, consulenza personalizzata, risparmio garantito."
-            className="w-full h-auto block rounded-2xl shadow-xl"
-          />
+{/* Hero Section — testo reale + volto */}
+<section className="bg-gradient-to-br from-slate-50 to-blue-50 py-16 px-4">
+  <div className="max-w-6xl mx-auto">
+    <div className="grid md:grid-cols-2 gap-12 items-center">
+      
+      {/* Colonna sinistra: titolo + CTA */}
+      <div>
+        <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">
+          Confronta luce, gas e telefonia con un <span className="text-blue-600">consulente</span>
+        </h1>
+        <p className="text-xl text-gray-700 mb-8 leading-relaxed">
+          Analizziamo costi, condizioni e durata dell'offerta prima di farti cambiare gestore.
+        </p>
+        
+        <div className="flex flex-col sm:flex-row gap-4">
+          <a 
+            href="#smart-gate" 
+            className="inline-flex items-center justify-center gap-2 bg-blue-600 text-white px-8 py-4 rounded-xl font-semibold hover:bg-blue-700 transition-colors shadow-lg"
+          >
+            <Zap className="h-5 w-5" />
+            Analizza gratuitamente la mia bolletta
+          </a>
+          <a 
+            href="https://wa.me/393791394162?text=Ciao%20Bruno,%20vorrei%20capire%20se%20cambiare%20gestore%20conviene" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center gap-2 bg-green-600 text-white px-8 py-4 rounded-xl font-semibold hover:bg-green-700 transition-colors shadow-lg"
+          >
+            <MessageCircle className="h-5 w-5" />
+            Parla con Bruno su WhatsApp
+          </a>
         </div>
-      </section>
+      </div>
 
-      {/* SMART GATE */}
-      <section className="py-12 px-4 -mt-8">
+      {/* Colonna destra: volto + frase personale */}
+      <div className="flex flex-col items-center text-center">
+        <div className="relative mb-6">
+          <img 
+            src="/bruno.jpg" 
+            alt="Bruno Poggi, consulente energia e telefonia" 
+            className="w-48 h-48 md:w-64 md:h-64 rounded-full object-cover shadow-2xl border-4 border-white"
+          />
+          <div className="absolute -bottom-2 -right-2 bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
+            Disponibile ora
+          </div>
+        </div>
+        <div className="bg-white rounded-xl shadow-sm p-6 max-w-md">
+          <p className="text-gray-700 text-lg italic leading-relaxed mb-3">
+            "Sono Bruno Poggi. Ti aiuto a capire se cambiare gestore conviene davvero, senza fermarmi al solo prezzo pubblicizzato."
+          </p>
+          <p className="text-sm text-gray-500 font-medium">
+            Consulente indipendente · Pogio.it
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+     {/* SMART GATE */}
+<section id="smart-gate" className="py-12 px-4 -mt-8">
         <div className="max-w-3xl mx-auto">
           <div className="bg-white rounded-2xl shadow-xl p-8 mb-8">
             <div className="flex items-center justify-between mb-6">
