@@ -172,8 +172,7 @@ export default function Home() {
               </Link>
             </div>
           </div>
-
-                   <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-3 gap-6">
             <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
               <div className="bg-blue-100 w-12 h-12 rounded-lg flex items-center justify-center mb-4"><ShieldCheck className="h-6 w-6 text-blue-600" /></div>
               <h3 className="font-bold text-gray-900 mb-2">Dati protetti</h3>
