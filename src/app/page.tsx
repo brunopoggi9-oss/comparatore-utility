@@ -77,7 +77,7 @@ export default function Home() {
               <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm font-medium text-slate-600">
                 <span className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-green-600" />100% gratuito</span>
                 <span className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-green-600" />Senza impegno</span>
-                <span className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-green-600" />Confronto imparziale</span>
+                <span className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-green-600" />Confronto trasparente</span>
               </div>
             </div>
 
@@ -173,24 +173,23 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6">
+                   <div className="grid md:grid-cols-3 gap-6">
             <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
               <div className="bg-blue-100 w-12 h-12 rounded-lg flex items-center justify-center mb-4"><ShieldCheck className="h-6 w-6 text-blue-600" /></div>
-              <h3 className="font-bold text-gray-900 mb-2">Dati Cifrati</h3>
-              <p className="text-sm text-gray-600">Il tuo IBAN viene cifrato con crittografia AES-256. Non lo condividiamo mai.</p>
+              <h3 className="font-bold text-gray-900 mb-2">Dati protetti</h3>
+              <p className="text-sm text-gray-600">I tuoi dati sono trattati con riservatezza e non ceduti a terzi.</p>
             </div>
             <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
               <div className="bg-green-100 w-12 h-12 rounded-lg flex items-center justify-center mb-4"><TrendingDown className="h-6 w-6 text-green-600" /></div>
-              <h3 className="font-bold text-gray-900 mb-2">Risparmio Reale</h3>
-              <p className="text-sm text-gray-600">Calcoliamo il risparmio basandoci sui tuoi consumi effettivi, non su stime generiche.</p>
+              <h3 className="font-bold text-gray-900 mb-2">Stima sui tuoi consumi</h3>
+              <p className="text-sm text-gray-600">La stima parte dai dati che inserisci; i dettagli li verifichiamo insieme.</p>
             </div>
             <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
               <div className="bg-purple-100 w-12 h-12 rounded-lg flex items-center justify-center mb-4"><Clock className="h-6 w-6 text-purple-600" /></div>
-              <h3 className="font-bold text-gray-900 mb-2">30 Secondi</h3>
-              <p className="text-sm text-gray-600">Confronta tutte le offerte in meno di un minuto. Attivazione rapida e senza carta.</p>
+              <h3 className="font-bold text-gray-900 mb-2">Confronto rapido</h3>
+              <p className="text-sm text-gray-600">Ti bastano consumo e spesa annua: al resto pensiamo noi.</p>
             </div>
           </div>
-        </div>
       </section>
 
            <footer className="bg-gray-900 text-white py-8 mt-12">
