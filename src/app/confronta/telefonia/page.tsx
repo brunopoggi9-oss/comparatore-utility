@@ -158,7 +158,7 @@ export default function ConfrontaTelefoniaPage() {
                 <div className="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded-r-lg flex items-start gap-3 mt-4">
                   <AlertCircle className="h-5 w-5 text-yellow-600 flex-shrink-0 mt-0.5" />
                   <p className="text-xs text-yellow-800">
-                    <strong>Nota sulla trasparenza:</strong> confrontiamo il canone mensile tutto incluso. Mostriamo solo le offerte che ti farebbero risparmiare rispetto a quanto paghi oggi.
+                    <strong>Stima calcolata sui dati inseriti.</strong> Confrontiamo il canone mensile tutto incluso; prima di attivare verifichiamo costi di attivazione e condizioni.
                   </p>
                 </div>
               </div>
@@ -186,7 +186,7 @@ export default function ConfrontaTelefoniaPage() {
 
               {risultati.map((offerta, index) => (
                 <div key={offerta.id} className={`bg-white rounded-xl shadow-sm p-6 ${index === 0 ? 'ring-2 ring-green-500' : ''}`}>
-                  {index === 0 && <div className="inline-block bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full mb-4">Miglior offerta</div>}
+                  {index === 0 && <div className="inline-block bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full mb-4">Più conveniente sulla stima</div>}
                   <div className="flex items-start justify-between mb-4">
                     <div><h3 className="text-xl font-bold">{offerta.nome}</h3><p className="text-gray-600">{offerta.gestore}</p></div>
                     <div className="text-right">
@@ -201,11 +201,41 @@ export default function ConfrontaTelefoniaPage() {
                     <div><p className="text-sm text-gray-500">Canone offerta</p><p className="text-xl font-bold">{offerta.prezzo}€/mese</p></div>
                     <div><p className="text-sm text-gray-500">Spesa annua con l'offerta</p><p className="text-xl font-bold">{offerta.costoAnnuo.toFixed(0)}€</p></div>
                   </div>
-                  <div className="mt-4 space-y-2">
-                    {offerta.vantaggi.map((feature: string, i: number) => (
-                      <div key={i} className="flex items-center gap-2"><Check className="h-4 w-4 text-green-600 flex-shrink-0" /><span className="text-sm text-gray-700">{feature}</span></div>
-                    ))}
+
+                  {/* PERCHÉ LA CONSIGLIAMO */}
+                  <div className="mt-4 bg-slate-50 border border-slate-200 rounded-lg p-4">
+                    <p className="text-xs font-bold text-slate-700 uppercase tracking-wide mb-3">Perché la consigliamo</p>
+                    <div className="grid grid-cols-3 gap-3 text-center mb-3">
+                      <div>
+                        <p className="text-[11px] text-slate-500">Canone</p>
+                        <p className="text-sm font-bold text-slate-800">{offerta.prezzo}€/mese</p>
+                      </div>
+                      <div>
+                        <p className="text-[11px] text-slate-500">Costi fissi</p>
+                        <p className="text-sm font-bold text-slate-800">{offerta.costo_fisso > 0 ? `${offerta.costo_fisso}€` : 'Inclusi'}</p>
+                      </div>
+                      <div>
+                        <p className="text-[11px] text-slate-500">Prezzo</p>
+                        <p className="text-sm font-bold text-slate-800">
+                          {offerta.durata > 0 ? `Bloccato ${offerta.durata} mesi` : 'Variabile'}
+                        </p>
+                      </div>
+                    </div>
+                    {offerta.vantaggi.length > 0 && (
+                      <ul className="space-y-1 mb-3">
+                        {offerta.vantaggi.map((feature: string, i: number) => (
+                          <li key={i} className="flex items-start gap-2 text-xs text-slate-600">
+                            <Check className="h-3.5 w-3.5 text-green-600 flex-shrink-0 mt-0.5" />
+                            {feature}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                    <p className="text-[11px] text-slate-500 italic">
+                      Prima di attivare verifichiamo insieme costi di attivazione, durata del prezzo e condizioni complete.
+                    </p>
                   </div>
+
                   <Link href={`/attivazione?offerta=${encodeURIComponent(offerta.nome + ' - ' + offerta.gestore)}`} className="block w-full mt-4 py-3 rounded-lg font-semibold text-center bg-purple-600 text-white hover:bg-purple-700 transition-colors">
                     Attiva questa offerta
                   </Link>
