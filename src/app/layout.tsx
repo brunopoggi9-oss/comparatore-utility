@@ -3,9 +3,9 @@ import { Metadata } from 'next';
 import Script from 'next/script';
 import CookieBanner from '../components/CookieBanner';
 
-export const metadata: Metadata = {
-  title: 'Pogio - Confronta e risparmia su Luce, Gas e Telefonia',
-  description: 'Scopri le migliori offerte di luce, gas e telefonia in 30 secondi. Confronto imparziale, senza impegno. Risparmia fino a 300€ all\'anno sulle tue bollette.',
+export const metadata = {
+  title: 'Pogio – Confronta luce, gas e telefonia con un consulente | Bruno Poggi',
+  description: 'Confronto trasparente delle offerte di luce, gas e telefonia a Formia e provincia. Analisi gratuita della bolletta: ti diciamo onestamente se cambiare gestore conviene.',
   keywords: 'comparatore offerte, offerte luce, offerte gas, offerte fibra, telefonia, risparmio bollette, confronto tariffe',
   authors: [{ name: 'Pogio' }],
   
