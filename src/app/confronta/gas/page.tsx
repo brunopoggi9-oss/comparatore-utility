@@ -53,10 +53,11 @@ export default function ConfrontaGasPage() {
       ? offerte
       : offerte.filter((o) => o.metodi.map((m) => m.toUpperCase().trim()).includes(metodoFiltro));
 
-    const offerteConRisparmio = lista.map((offerta) => {
+       const offerteConRisparmio = lista.map((offerta) => {
       const costiFissiStimati = spesaNum * 0.45;
       const materiaGasNuova = consumoNum * offerta.prezzo;
-      const nuovaBollettaTotale = costiFissiStimati + materiaGasNuova;
+      const pcvOfferta = offerta.costo_fisso; // Quota commercializzazione e vendita (PCV), come da regole ARERA
+      const nuovaBollettaTotale = costiFissiStimati + materiaGasNuova + pcvOfferta;
       const risparmio = spesaNum - nuovaBollettaTotale;
       return { ...offerta, costoAnnuo: nuovaBollettaTotale, risparmio };
     });
