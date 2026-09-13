@@ -173,7 +173,7 @@ export default function ConfrontaLucePage() {
                 <div className="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded-r-lg flex items-start gap-3 mt-4">
                   <AlertCircle className="h-5 w-5 text-yellow-600 flex-shrink-0 mt-0.5" />
                   <p className="text-xs text-yellow-800">
-                    <strong>Stima calcolata sui dati inseriti.</strong> Prima di attivare verifichiamo insieme costi fissi, durata del prezzo e condizioni complete.
+                   <strong>Stima calcolata sui dati inseriti, comprensiva della quota di commercializzazione e vendita (PCV) dell'offerta, secondo le regole di trasparenza ARERA.</strong> Il confronto è prudenziale: se la spesa che hai inserito non include il tuo PCV attuale, il risparmio reale può essere solo superiore a quello mostrato. Prima di attivare verifichiamo insieme tutti i dettagli.
                   </p>
                 </div>
               </div>
