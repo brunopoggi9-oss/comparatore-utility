@@ -204,6 +204,9 @@ export default function Home() {
           <div className="mt-3 text-sm text-gray-500">
             <a href="mailto:info@pogio.it" className="hover:text-blue-400">info@pogio.it</a>
           </div>
+                 <div className="mt-2 text-sm text-gray-500">
+         <Link href="/faq" className="hover:text-blue-400">FAQ: bolletta e cambio fornitore</Link>
+       </div>
         </div>
       </footer>
     </div>
