@@ -1,8 +1,6 @@
 import './globals.css';
-import { Metadata } from 'next';
 import Script from 'next/script';
 import CookieBanner from '../components/CookieBanner';
-
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -13,6 +11,9 @@ export const metadata: Metadata = {
   },
   description:
     'Confronta le offerte di luce, gas e telefonia con un consulente indipendente: analisi gratuita della bolletta e stima onesta del risparmio a Formia.',
+  verification: {
+    google: '1d475449c33ee5b6',
+  },
   openGraph: {
     type: 'website',
     locale: 'it_IT',
@@ -23,24 +24,11 @@ export const metadata: Metadata = {
       'Confronta le offerte di luce, gas e telefonia con un consulente indipendente: analisi gratuita della bolletta e stima onesta del risparmio a Formia.',
     images: [{ url: '/bruno.png', width: 800, height: 800, alt: 'Bruno Poggi, consulente energia e telefonia' }],
   },
-};
-  
-  verification: {
-    google: '1d475449c33ee5b6',
-  },
-
-  openGraph: {
-    title: 'Pogio - Confronta e risparmia su Luce, Gas e Telefonia',
-    description: 'Scopri le migliori offerte di luce, gas e telefonia in 30 secondi. Risparmia fino a 300€ all\'anno.',
-    url: 'https://pogio.it',
-    siteName: 'Pogio',
-    locale: 'it_IT',
-    type: 'website',
-  },
   twitter: {
     card: 'summary_large_image',
-    title: 'Pogio - Confronta e risparmia',
-    description: 'Scopri le migliori offerte di luce, gas e telefonia in 30 secondi.',
+    title: 'Confronto Bollette Luce, Gas e Telefonia | Pogio.it',
+    description:
+      'Confronta le offerte di luce, gas e telefonia con un consulente indipendente: analisi gratuita della bolletta e stima onesta del risparmio a Formia.',
   },
   robots: {
     index: true,
@@ -62,8 +50,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="it">
-      {/* ✅ SCRIPT GOOGLE ANALYTICS NEL <HEAD> ✅ */}
       <head>
+        {/* Google Analytics */}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-CW08FD0Y27"
           strategy="beforeInteractive"
@@ -84,6 +72,47 @@ export default function RootLayout({
       <body>
         <CookieBanner />
         {children}
+
+        {/* Schema.org: Organization + WebSite */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@graph': [
+                {
+                  '@type': 'Organization',
+                  '@id': 'https://pogio.it/#organization',
+                  name: 'Pogio',
+                  url: 'https://pogio.it',
+                  logo: 'https://pogio.it/bruno.png',
+                  image: 'https://pogio.it/bruno.png',
+                  description: 'Consulenza indipendente su luce, gas e telefonia a Formia e provincia.',
+                  sameAs: [
+                    'https://facebook.com/profile.php?id=61593343671767',
+                    'https://instagram.com/pogio.it',
+                    'https://tiktok.com/@pogio.it',
+                  ],
+                  contactPoint: {
+                    '@type': 'ContactPoint',
+                    telephone: '+39 379 139 4162',
+                    contactType: 'customer service',
+                    areaServed: 'IT',
+                    availableLanguage: ['Italian'],
+                  },
+                },
+                {
+                  '@type': 'WebSite',
+                  '@id': 'https://pogio.it/#website',
+                  url: 'https://pogio.it',
+                  name: 'Pogio',
+                  inLanguage: 'it-IT',
+                  publisher: { '@id': 'https://pogio.it/#organization' },
+                },
+              ],
+            }),
+          }}
+        />
       </body>
     </html>
   );
