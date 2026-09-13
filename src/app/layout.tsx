@@ -3,7 +3,7 @@ import { Metadata } from 'next';
 import Script from 'next/script';
 import CookieBanner from '../components/CookieBanner';
 
-export const metadata = import type { Metadata } from 'next';
+import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://pogio.it'),
