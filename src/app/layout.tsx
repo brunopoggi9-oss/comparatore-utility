@@ -72,7 +72,6 @@ export default function RootLayout({
       <body>
         <CookieBanner />
         {children}
-
         {/* Schema.org: Organization + WebSite */}
         <script
           type="application/ld+json"
@@ -85,9 +84,26 @@ export default function RootLayout({
                   '@id': 'https://pogio.it/#organization',
                   name: 'Pogio',
                   url: 'https://pogio.it',
-                  logo: 'https://pogio.it/bruno.png',
-                  image: 'https://pogio.it/bruno.png',
-                  description: 'Consulenza indipendente su luce, gas e telefonia a Formia e provincia.',
+                  logo: {
+                    '@type': 'ImageObject',
+                    url: 'https://pogio.it/bruno.png',
+                    width: 800,
+                    height: 800,
+                  },
+                  image: {
+                    '@type': 'ImageObject',
+                    url: 'https://pogio.it/bruno.png',
+                    width: 800,
+                    height: 800,
+                  },
+                  description: 'Consulenza indipendente su luce, gas e telefonia a Formia e provincia di Latina.',
+                  address: {
+                    '@type': 'PostalAddress',
+                    addressLocality: 'Formia',
+                    addressRegion: 'LT',
+                    postalCode: '04023',
+                    addressCountry: 'IT',
+                  },
                   sameAs: [
                     'https://facebook.com/profile.php?id=61593343671767',
                     'https://instagram.com/pogio.it',
