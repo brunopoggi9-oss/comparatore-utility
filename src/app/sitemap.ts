@@ -1,38 +1,25 @@
-import { MetadataRoute } from 'next'
- 
+import { MetadataRoute } from 'next';
+import { COMUNI } from '@/lib/comuni';
+
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://pogio.it'
-  
+  const base = 'https://pogio.it';
+  const today = new Date().toISOString();
+
+  const pagineComuni: MetadataRoute.Sitemap = COMUNI.map((c) => ({
+    url: `${base}/consulente-energia/${c.slug}`,
+    lastModified: today,
+    changeFrequency: 'monthly',
+    priority: 0.8,
+  }));
+
   return [
-    {
-      url: baseUrl,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 1,
-    },
-    {
-      url: `${baseUrl}/confronta/luce`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/confronta/gas`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/confronta/telefonia`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/attivazione`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.5,
-    },
-  ]
+    { url: base, lastModified: today, changeFrequency: 'weekly', priority: 1 },
+    { url: `${base}/consulente-energia-formia`, lastModified: today, changeFrequency: 'weekly', priority: 0.9 },
+    ...pagineComuni,
+    { url: `${base}/confronta/luce`, lastModified: today, changeFrequency: 'weekly', priority: 0.8 },
+    { url: `${base}/confronta/gas`, lastModified: today, changeFrequency: 'weekly', priority: 0.8 },
+    { url: `${base}/confronta/telefonia`, lastModified: today, changeFrequency: 'weekly', priority: 0.8 },
+    { url: `${base}/faq`, lastModified: today, changeFrequency: 'monthly', priority: 0.7 },
+    { url: `${base}/consulenza`, lastModified: today, changeFrequency: 'monthly', priority: 0.7 },
+  ];
 }
