@@ -66,10 +66,13 @@ export default function ConfrontaGasPage() {
     const vantaggiose = offerteConRisparmio.filter((o) => o.risparmio > 0);
     setRisultati(vantaggiose);
 
-    const best = vantaggiose[0];
-    const msg = best
-      ? `Ciao Bruno, ho confrontato le offerte Gas su pogio.it.%0AConsumo: ${consumoNum} Smc · Spesa attuale: ${spesaNum}€.%0AMigliore: ${best.nome} (${best.gestore}) · Risparmio stimato ${best.risparmio.toFixed(0)}€.%0AVorrei una consulenza.`
-      : `Ciao Bruno, ho confrontato le offerte Gas su pogio.it.%0AConsumo: ${consumoNum} Smc · Spesa attuale: ${spesaNum}€.%0ANon risultano offerte vantaggiose: vorrei una consulenza.`;
+       const top3 = vantaggiose.slice(0, 3);
+    const righeTop3 = top3
+      .map((o, i) => `${i + 1}. ${o.nome} (${o.gestore}) · ${o.prezzo}€/Smc · PCV ${o.costo_fisso}€ · ${o.durata > 0 ? `blocco ${o.durata} mesi` : 'indicizzato'} → +${o.risparmio.toFixed(0)}€/anno`)
+      .join('%0A');
+    const msg = top3.length > 0
+      ? `Ciao Bruno, ho fatto il confronto Gas su pogio.it.%0AConsumo: ${consumoNum} Smc · Spesa attuale: ${spesaNum}€.%0ALe 3 migliori sulla mia stima:%0A${righeTop3}%0AVoglio l'ANALISI DETTAGLIATA gratuita: ti giro subito la foto della bolletta.`
+      : `Ciao Bruno, ho fatto il confronto Gas su pogio.it.%0AConsumo: ${consumoNum} Smc · Spesa attuale: ${spesaNum}€.%0ANon risultano offerte vantaggiose: voglio comunque l'ANALISI DETTAGLIATA gratuita, ti giro la foto della bolletta.`;
     setWaLink(`https://wa.me/393791394162?text=${msg}`);
 
     setStep(2);
