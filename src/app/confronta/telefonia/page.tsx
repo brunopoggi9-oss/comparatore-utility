@@ -169,8 +169,9 @@ export default function ConfrontaTelefoniaPage() {
               </div>
 
               <div className="flex flex-col sm:flex-row gap-3">
-                <a href={waLink} target="_blank" rel="noopener noreferrer" className="flex-1 inline-flex items-center justify-center gap-2 bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700">
-                  <MessageCircle className="h-5 w-5" /> Invia il risultato su WhatsApp
+             <a href={waLink} target="_blank" rel="noopener noreferrer" className="flex-1 inline-flex flex-col items-center justify-center gap-1 bg-green-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-green-700 transition-colors">
+                  <span className="inline-flex items-center gap-2"><MessageCircle className="h-5 w-5" /> Ricevi l'analisi dettagliata su WhatsApp</span>
+                  <span className="text-[11px] font-normal text-green-100">Ti rispondo chiedendoti la bolletta: analisi completa gratis, senza impegno</span>
                 </a>
                 <Link href="/consulenza" className="flex-1 inline-flex items-center justify-center gap-2 bg-white border-2 border-purple-600 text-purple-600 py-3 rounded-lg font-semibold hover:bg-purple-50">
                   <Phone className="h-5 w-5" /> Richiedi consulenza
